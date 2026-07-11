@@ -22,3 +22,7 @@ https://antixbasipek.taile1bff7.ts.net/synodos?path=%2FLobby&node_id=45
 *   **Modular Node Filesystem:** Avoids heavy, monolithic database reads. Language paths are loaded dynamically from separate, lightweight static files (e.g., `jp_dummy.json`, `de_section1.json`).
 
 ---
+
+## Code
+
+Check out the dev branch for the latest build.
