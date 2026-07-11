@@ -4,6 +4,9 @@
 
 Vicilingo replaces scattered notebooks, vocabulary apps, and disjointed text files by organizing multiple languages onto a single, draggable HTML5 Canvas mind map. It transforms your (my) personal study strategy (assessing topics, generating targeted exercises, interactive roleplay, and tracking dynamic pools) into a unified, streamlined homelab.
 
+See it in action!
+https://antixbasipek.taile1bff7.ts.net/language
+
 [Heavily WIP and early in development. AI Assisted.]
 ---
 
