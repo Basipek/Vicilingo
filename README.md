@@ -20,16 +20,3 @@ Vicilingo replaces scattered notebooks, vocabulary apps, and disjointed text fil
 ## 🛠️ System Architecture
 
 Vicilingo is designed to live inside its own standalone Git repository for clean version control, while being seamlessly served alongside a master application ecosystem at `/language`.
-
-```text
-projects/
-├── website/                         # Main Web Interface (Host App)
-│   ├── mainapp.py                   # Registers Vicilingo Blueprint
-│   └── templates/
-└── webinterfacelanguage_Vicilingo/  # Vicilingo Repository (This Folder)
-    ├── languageFlask.py             # Blueprint declarations & API routes
-    ├── .env                         # Local environment variables (Ignored)
-    ├── static/
-    │   └── languagegame/            # Node cluster JSON arrays
-    └── templates/
-        └── index.html               # HTML5 Engine Canvas layout
