@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vicilingo - Conquest of Language</title>
+    <style>
+        body, html { margin: 0; padding: 0; overflow: hidden; background: #1a1a1a; font-family: sans-serif; color: white; }
+        #canvas-container { width: 100vw; height: 100vh; position: relative; }
+        canvas { display: block; cursor: grab; }
+        canvas:active { cursor: grabbing; }
+        #ui-overlay { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 8px; max-width: 300px; pointer-events: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        button { background: #444; color: #fff; border: 1px solid #666; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-top: 5px;}
+        button:hover { background: #666; }
+    </style>
+</head>
+<body>
+
+<div id="canvas-container">
+    <canvas id="mapCanvas"></canvas>
+    
+    <div id="ui-overlay">
+        <h2>⚔️ Vicilingo Map</h2>
+        <div id="node-details">Click a node to inspect...</div>
+        <button onclick="testLLMCall()">Test Gym LLM Call</button>
+    </div>
+</div>
+
+<script>
+const canvas = document.getElementById('mapCanvas');
+const ctx = canvas.getContext('2d');
+
+let width = canvas.width = window.innerWidth;
+let height = canvas.height = window.innerHeight;
+
+// Map state
+let camera = { x: 0, y: 0 };
+let isDragging = false;
+let startDrag = { x: 0, y: 0 };
+let nodes = [];
+
+// Load World map placeholder image
+const bgImage = new Image();
+bgImage.src = '[https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_blank_black_white.svg](https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_blank_black_white.svg)';
+
+// Fetch Mock Japanese Nodes
+fetch('/api/nodes/jp_dummy')
+    .then(res => res.json())
+    .then(data => {
+        nodes = data.nodes;
+        draw();
+    });
+
+function draw() {
+    ctx.clearRect(0, 0, width, height);
+    ctx.save();
+    // Move camera position
+    ctx.translate(camera.x, camera.y);
+
+    // Draw background image scaled out
+    if (bgImage.complete) {
+        ctx.globalAlpha = 0.15; // Unobtrusive background
+        ctx.drawImage(bgImage, 0, 0, 1600, 1000);
+        ctx.globalAlpha = 1.0;
+    }
+
+    // Draw lines/ribbons between connections
+    ctx.strokeStyle = '#ff9f43';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([5, 5]);
+    nodes.forEach(node => {
+        if(node.connections) {
+            node.connections.forEach(targetId => {
+                let target = nodes.find(n => n.id === targetId);
+                if(target) {
+                    ctx.beginPath();
+                    ctx.moveTo(node.x, node.y);
+                    ctx.lineTo(target.x, target.y);
+                    ctx.stroke();
+                }
+            });
+        }
+    });
+    ctx.setLineDash([]); // Reset dash
+
+    // Draw Nodes
+    nodes.forEach(node => {
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, 25, 0, Math.PI * 2);
+        ctx.fillStyle = '#5f27cd';
+        ctx.fill();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#fff';
+        ctx.stroke();
+
+        // Labels
+        ctx.fillStyle = '#fff';
+        ctx.font = '14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(node.label, node.x, node.y - 35);
+    });
+
+    ctx.restore();
+}
+
+// Mouse Drag / Camera Movement logic
+window.addEventListener('mousedown', (e) => {
+    // Prevent dragging if hitting UI overlay
+    if(e.target.closest('#ui-overlay')) return;
+    
+    // Check if node clicked
+    let canvasX = e.clientX - camera.x;
+    let canvasY = e.clientY - camera.y;
+    let clickedNode = nodes.find(n => Math.hypot(n.x - canvasX, n.y - canvasY) < 25);
+    
+    if(clickedNode) {
+        document.getElementById('node-details').innerHTML = `
+            <h3>${clickedNode.label}</h3>
+            <p>${clickedNode.description}</p>
+            <small><b>Cheat:</b> ${clickedNode.cheatsheet}</small>
+        `;
+    } else {
+        isDragging = true;
+        startDrag.x = e.clientX - camera.x;
+        startDrag.y = e.clientY - camera.y;
+    }
+});
+
+window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    camera.x = e.clientX - startDrag.x;
+    camera.y = e.clientY - startDrag.y;
+    draw();
+});
+
+window.addEventListener('mouseup', () => isDragging = false);
+window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+    draw();
+});
+bgImage.onload = () => draw();
+
+// Gym API Call demonstration
+function testLLMCall() {
+    const details = document.getElementById('node-details');
+    details.innerHTML = "Fetching custom exercise from OpenRouter...";
+    
+    fetch('/api/generate-exercise', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({topics: ['Hiragana Vowels'], difficulty: 'A1'})
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.error) throw new Error(data.error);
+        details.innerHTML = `
+            <h4>Exercise generated!</h4>
+            <p>${data.question}</p>
+            ${data.options.map(opt => `<button onclick="alert('${opt === data.answer ? 'XP Earned! Great!' : 'Wrong answer!'}')">${opt}</button>`).join('<br>')}
+        `;
+    })
+    .catch(err => {
+        details.innerHTML = `<span style="color:red">Error: ${err.message}</span>`;
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "language": "Japanese",
+  "section": "A1_Starter",
+  "nodes": [
+    {
+      "id": "jp_hiragana_1",
+      "label": "Hiragana: Vowels",
+      "x": 200,
+      "y": 300,
+      "connections": ["jp_hiragana_2"],
+      "description": "Master the core vowels: あ, い, う, え, お.",
+      "cheatsheet": "A (ah), I (ee), U (oo), E (eh), O (oh)"
+    },
+    {
+      "id": "jp_hiragana_2",
+      "label": "Hiragana: K-G Rows",
+      "x": 350,
+      "y": 280,
+      "connections": ["jp_greetings"],
+      "description": "Introducing K-sounds and their voiced G-sound variants (Dakuten).",
+      "cheatsheet": "か(ka) -> が(ga). Adds tenten (\") marks."
+    },
+    {
+      "id": "jp_greetings",
+      "label": "Basic Greetings",
+      "x": 500,
+      "y": 350,
+      "connections": [],
+      "description": "Essential daily pleasantries.",
+      "cheatsheet": "Konnichiwa = Hello, Arigatou = Thanks."
+    }
+  ]
+}
