@@ -12,11 +12,7 @@ Vicilingo replaces scattered notebooks, vocabulary apps, and disjointed text fil
 *   **Spatial Conquest Map (HTML5 Canvas):** A performance-focused, zero-dependency draggable and zoomable canvas map displaying your language tracks as node clusters (e.g., Japanese A1 extending to the West, German to the South).
 *   **Automated Progress Hub:** Keeps your active learning footprint compact. Topics are categorized dynamically by performance: *Bad Performance, Meh Performance, Good Performance, and Memorized*. Correct answers grant XP; time decay and mistakes drop XP, shifting nodes across performance pools.
 *   **The Ingredient Gym (Cooking Minigame):** A dynamic staging area where you select topics as "ingredients" and dial in custom parameters (difficulty, character RP style, question types, alphabet configurations). The interface compiles them into a custom prompt payload.
-*   **On-Demand LLM Orchestration:** Integrates with free-tier APIs via OpenRouter (`poolside/laguna-m.1:free`) to generate clean, JSON-parsed exercises, evaluate free-form text, handle grammar Q&As, and spin up context-aware RP sessions.
+*   **On-Demand LLM Orchestration:** Integrates with free-tier APIs via OpenRouter to generate clean, JSON-parsed exercises, evaluate free-form text, handle grammar Q&As, and spin up context-aware RP sessions.
 *   **Modular Node Filesystem:** Avoids heavy, monolithic database reads. Language paths are loaded dynamically from separate, lightweight static files (e.g., `jp_dummy.json`, `de_section1.json`).
 
 ---
-
-## 🛠️ System Architecture
-
-Vicilingo is designed to live inside its own standalone Git repository for clean version control, while being seamlessly served alongside a master application ecosystem at `/language`.
