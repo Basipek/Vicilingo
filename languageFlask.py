@@ -164,7 +164,7 @@ def generate_exercise():
         "messages": [{"role": "user", "content": prompt}]
     }
     
-    print(prompt)
+    #print(prompt)
     print("\n////PROMPT SENT TO OPENROUTER////")
     print(f"\n////PROMPT SENT BY {nickname}////O0+--")
 
@@ -176,7 +176,7 @@ def generate_exercise():
         )
         ai_res = response.json()
         
-        print(ai_res)
+        #print(ai_res)
         print("\n////OPENROUTER RESPONSE////")
         print(f"////RESPONSE FOR {nickname}////O0+--")
         
