@@ -1,0 +1,213 @@
+{
+  "language": "Korean",
+  "section": "A1_Starter",
+  "nodes": [
+    {
+      "id": "ko_alphabet_vowels",
+      "label": "Hangul: Basic Vowels",
+      "x": 350,
+      "y": 200,
+      "connections": [],
+      "description": "Learn the foundational vertical and horizontal vowel strokes of the Korean alphabet.",
+      "cheatsheet": "Korean is written in syllabic blocks. Master the basic vertical vowels: **ㅏ** (*a*), **ㅓ** (*eo*), **ㅣ** (*i*), and horizontal vowels: **ㅗ** (*o*), **ㅜ** (*u*), **ㅡ** (*eu*). Adding a short stroke creates a 'y' sound: **ㅑ** (*ya*), **ㅕ** (*yeo*), **ㅛ** (*yo*), **ㅠ** (*yu*). Vowels cannot stand alone; they use a silent circle filler **ㅇ** when starting a syllable (e.g., **아**)."
+    },
+    {
+      "id": "ko_alphabet_consonants",
+      "label": "Hangul: Basic Consonants",
+      "x": 350,
+      "y": 280,
+      "connections": ["ko_alphabet_vowels"],
+      "description": "Master core consonant characters and learn how to pack them into syllable blocks.",
+      "cheatsheet": "Learn basic shapes representing speech organs: **ㄱ** (*g/k*), **ㄴ** (*n*), **ㄷ** (*d/t*), **ㄹ** (*r/l*), **ㅁ** (*m*), **ㅂ** (*b/p*), **ㅅ** (*s*), **ㅇ** (*ng* when at bottom), **ㅈ** (*j*), **ㅎ** (*h*). Syllables pack consonants and vowels tightly into squares: Left-to-Right for vertical vowels (**가** / *ga*), Top-to-Bottom for horizontal vowels (**고** / *go*), and bottom placement for final consonants called Batchim (**간** / *gan*)."
+    },
+    {
+      "id": "ko_greetings_phrases",
+      "label": "Greetings & Set Phrases",
+      "x": 350,
+      "y": 350,
+      "connections": ["ko_alphabet_consonants"],
+      "description": "Master essential polite daily greetings, self-identifying phrases, and meeting transitions.",
+      "cheatsheet": "Introduce your name: **이름이 무엇입니까?** (*What is your name?*) or politely **이름이 어떻게 되세요?**. Standard daily greeting: **안녕하세요** (*Hello / How are you?*). When leaving, if you are departing say **안녕히 계세요** (*Stay peacefully*). If you are staying and the other person is leaving, say **안녕히 가세요** (*Go pleasantly*). Meet someone for the first time: **처음 뵙겠습니다** (*Nice to meet you*)."
+    },
+    {
+      "id": "ko_countries_identity",
+      "label": "Countries & Identity",
+      "x": 450,
+      "y": 380,
+      "connections": ["ko_greetings_phrases"],
+      "description": "Talk about nationalities, languages, and core family relationships.",
+      "cheatsheet": "State nationality by adding **사람** (*person*) after a country name: **프랑스 사람** (*French person*), or use specific root words like **한국인** (*Korean*). Languages attach the suffix **-어** or **-국어** to the country: **한국어** (*Korean language*), **영어** (*English*). Basic family roots: **어머니** (*Mother*) and **아버지** (*Father*). Use **우리** (*our*) instead of 'my' for family: **우리 어머니** (*My/Our mother*)."
+    },
+    {
+      "id": "ko_numbers_large",
+      "label": "Numbers, Hundreds & Thousands",
+      "x": 420,
+      "y": 480,
+      "connections": ["ko_greetings_phrases"],
+      "description": "Count higher figures into hundreds and thousands using Sino-Korean numbers, and learn basic fractions.",
+      "cheatsheet": "Large figures use the Sino-Korean system. Hundreds are formed using **백** (100): 300 is **삼백**, 600 is **육백**. Thousands use **천** (1000): 3000 is **삼천**. Note that 10,000 shifts to a unique base unit **만** (*man*). Fractions place the denominator first, followed by the particle **분의** (*bun-ui*), then the numerator: 2/3 is written/spoken as **3분의 2** (*sam-bun-ui i*, literally 'of three parts, two')."
+    },
+    {
+      "id": "ko_demonstratives_core",
+      "label": "Demonstratives (I-Geu-Jeo)",
+      "x": 320,
+      "y": 480,
+      "connections": ["ko_countries_identity"],
+      "description": "Identify objects using proximity-based pronouns and noun modifiers.",
+      "cheatsheet": "Korean has a 3-tier proximity system: **이** (*this* - near me), **그** (*that* - near the listener / mentioned before), and **저** (*that over there* - far from both). To modify nouns directly, place them right before: **이 책** (*this book*). To use them as standalone pronouns, attach the word for thing (**것**): **이것** (*this thing*), **그것** (*that thing*), **저것** (*that thing over there*). Ask 'What is this?': **이것은 무엇입니까?**."
+    },
+    {
+      "id": "ko_colours_descript",
+      "label": "Colours & Descriptions",
+      "x": 220,
+      "y": 420,
+      "connections": ["ko_demonstratives_core"],
+      "description": "Use basic color vocabulary to modify and describe everyday objects.",
+      "cheatsheet": "Primary color words change to adjective forms before nouns: **빨간** (*red*), **파란** (*blue*), **까만** (*black*), and **하얀** (*white*). For example: **빨간 사과** (*red apple*). Other common descriptive colors include **초록색** (*green*) and **노란** (*yellow*). When standing alone as nouns, they often append **-색** (*color*), such as **빨간색**."
+    },
+    {
+      "id": "ko_counters_general",
+      "label": "General Counters & Quantity",
+      "x": 520,
+      "y": 550,
+      "connections": ["ko_numbers_large"],
+      "description": "Count items and quantities using Native Korean numbers and structural counting units.",
+      "cheatsheet": "When counting objects, you *must* use Native Korean numbers (**하나, 둘, 셋...**) followed by a specific classifier noun. For general items/pieces, use **개** (*gae*): e.g., 'three books' is written as **책 세 권** (noun + number + classifier) or 'five apples' is **사과 다섯 개**. Ask 'How many?' using **몇 개?**."
+    },
+    {
+      "id": "ko_floors_negatives",
+      "label": "Floors & Negative Numbers",
+      "x": 620,
+      "y": 480,
+      "connections": ["ko_numbers_large"],
+      "description": "Navigate building levels, floors, basements, and negative numbers using Sino-Korean digits.",
+      "cheatsheet": "Count building levels using the Sino-Korean system paired with **층** (*cheung* / floor). First floor is **일층**, third floor is **삼층**. The basement levels use the prefix **지하** (*ji-ha*): B1 is **지하 일층**. For negative mathematical values or below-zero weather temperatures, utilize the prefix **마이너스** (*maineoseu*) or **영하** (*yeong-ha* / sub zero), such as **영하 오 도** (*minus 5 degrees*)."
+    },
+    {
+      "id": "ko_buildings_prepositions",
+      "label": "Buildings & Spatial Relations",
+      "x": 200,
+      "y": 550,
+      "connections": ["ko_demonstratives_core"],
+      "description": "Identify common spatial structures and describe basic physical layouts with location particles.",
+      "cheatsheet": "Common locations: **건물** (*building*) and **역** (*station*). Position objects using spatial nouns followed by the location particle **-에** (*at/in*): **위** (*on/above*), **아래 / 밑** (*under*), **앞** (*in front of*), and **뒤** (*behind*). Example: **책상 위에** (*on top of the desk*), **건물 앞에** (*in front of the building*)."
+    },
+    {
+      "id": "ko_existence_people",
+      "label": "Existence & Amount of People",
+      "x": 100,
+      "y": 450,
+      "connections": ["ko_buildings_prepositions", "ko_counters_general"],
+      "description": "Express presence, absence, and existence of objects or groups of people.",
+      "cheatsheet": "Korean uses **있다** (*itda*) for 'there is/are / to have' and **없다** (*eoptda*) for 'there is not/are not / to not have'. Example: **방에 두 명이 있습니다** (*There are two people in the room*). To count people, use Native Korean numbers followed by the specialized person counter **명** (*myeong*) or polite **분** (*bun*): **한 명** (*one person*), **두 명** (*two people*). Ask 'How many people?': **몇 명?**."
+    },
+    {
+      "id": "ko_time_calendar_anchors",
+      "label": "Relative Time: Day, Week, Month, Year",
+      "x": 480,
+      "y": 250,
+      "connections": ["ko_greetings_phrases"],
+      "description": "Anchor timelines cleanly across relative days, weeks, months, and years.",
+      "cheatsheet": "Timeline grid:\nDays: **그저께** (*day before yesterday*) → **어제** (*yesterday*) → **오늘** (*today*) → **내일** (*tomorrow*) → **모레** (*day after tomorrow*).\nWeeks: **지난주** (*last week*) → **이번 주** (*this week*) → **다음 주** (*next week*).\nMonths: **지난달** (*last month*) / **이번 달** (*this month*) / **다음 달** (*next month*).\nYears: **작년** (*last year*) / **올해** (*this year*) / **내년** (*next year*)."
+    },
+    {
+      "id": "ko_time_specific",
+      "label": "Specific Time: This Morning & Next Week",
+      "x": 580,
+      "y": 180,
+      "connections": ["ko_time_calendar_anchors"],
+      "description": "Isolate immediate parts of a day or adjacent calendar blocks.",
+      "cheatsheet": "Isolate specific windows of time like **오늘 아침** (*this morning*) or focus forward to **다음 주** (*next week*). Relative standalone temporal adverbs answering 'when' (like **오늘 아침**, **내일**, **어제**) do not require the time particle **-에**, whereas specific clock times or days of the week do."
+    },
+    {
+      "id": "ko_months_days",
+      "label": "Months & Days of the Month",
+      "x": 600,
+      "y": 300,
+      "connections": ["ko_time_calendar_anchors"],
+      "description": "Identify calendar months and navigate numeric dates of the month using Sino-Korean structures.",
+      "cheatsheet": "Months are simple: attach **월** (*wol*) to Sino-Korean numbers: January is **일월**, February is **이월**, June is **유월** (note exception), October is **시월** (note exception). Days of the month attach **일** (*il*) to Sino-Korean numbers: e.g., the 4th is **사일**. 'May 4th' is written/spoken as **5월 4일** (*o-wol sa-il*). The first day can also be referred to as **초하루** or simply **일일**."
+    },
+    {
+      "id": "ko_counters_time",
+      "label": "Year & Month Durations",
+      "x": 700,
+      "y": 250,
+      "connections": ["ko_months_days"],
+      "description": "Calculate spans and durations of time using years and month blocks.",
+      "cheatsheet": "To express spans of time, use Sino-Korean numbers with duration units: **년** (*nyeon* / year) or **개월** (*gae-wol* / month duration). Alternatively, Native Korean numbers can pair with **달** (*dal* / month duration): e.g., **삼 개월** or **세 달** both mean 'for three months'. You can add **동안** (*dongan* / during/for) for explicit emphasis: **세 달 동안** (*for a duration of three months*). Ask 'How many months?': **몇 개월?** or **몇 달?**."
+    },
+    {
+      "id": "ko_interrogative_onje",
+      "label": "Asking 'When' (Onje)",
+      "x": 420,
+      "y": 120,
+      "connections": ["ko_time_calendar_anchors"],
+      "description": "Formulate open-ended temporal questions about future, present, or past events.",
+      "cheatsheet": "Use the absolute question word **언제** (*When?*) to query schedules. Like relative time words, it stands cleanly in the sentence without needing destination particles. Example: **언제 한국에 갑니까?** (*When are you going to Korea?*)."
+    },
+    {
+      "id": "ko_meals_vocab",
+      "label": "Meals & Food Types",
+      "x": 250,
+      "y": 250,
+      "connections": ["ko_greetings_phrases"],
+      "description": "Categorize daily meals and basic dish selections.",
+      "cheatsheet": "Categorize daylight food frames using words that double as both the mealtime and the food itself: **아침** or **아침 식사** (*breakfast*), **점심** (*lunch*), and **저녁** (*dinner*). Identify core cultural staples like **밥** (*rice/meal*), **김치** (*kimchi*), and **불고기** (*bulgogi*)."
+    },
+    {
+      "id": "ko_verbs_consume",
+      "label": "Consumptive Actions (Eat & Drink)",
+      "x": 150,
+      "y": 200,
+      "connections": ["ko_meals_vocab"],
+      "description": "Utilize active consumption roots for eating and drinking with object markers.",
+      "cheatsheet": "Core verb dictionary roots: **먹다** (*to eat*) and **마시다** (*to drink*). In the standard polite present tense, they become **먹어요** (*I eat / am eating*) and **마셔요** (*I drink / am drinking*). Mark your definite or indefinite objects clearly with the object particles **-을 / -를**: **차를 마셔요** (*I am drinking tea*), **밥을 먹어요** (*I am eating rice*)."
+    },
+    {
+      "id": "ko_verb_sentences",
+      "label": "Verb Conjugation & Tenses",
+      "x": 80,
+      "y": 120,
+      "connections": ["ko_verbs_consume"],
+      "description": "Conjugate actions into polite affirmative, negative, past, and exploratory desire states.",
+      "cheatsheet": "Polite informal quadrant using **먹다** (to eat) for 'I':\nAffirmative: **먹어요** (*I eat / am eating*)\nNegative: Place **안** before the verb: **안 먹어요** (*I don't eat*)\nPast: **먹었어요** (*I ate*)\nDesire: Attach the construction **-고 싶다** to the verb stem: **먹고 싶어요** (*I want to eat*). Twist to a question: **먹고 싶어요?** (*Do you want to eat?*)."
+    },
+    {
+      "id": "ko_conjunctions_sequence",
+      "label": "Conjunctions (And & Then)",
+      "x": 100,
+      "y": 300,
+      "connections": ["ko_verbs_consume"],
+      "description": "Link phrases together or order successive events smoothly.",
+      "cheatsheet": "Use conversational connectors: **그리고** (*and*) to link separate sentences, or connect nouns in a list using **하고** (*and*). To chain distinct actions sequentially over time ('and then / after that'), use the sentence starter **그러고 나서** or append the clitic **-고** directly to the first verb stem (e.g., **먹고 마셔요** / *I eat and then drink*)."
+    },
+    {
+      "id": "ko_frequency_adverbs",
+      "label": "Frequency of Verbs",
+      "x": -20,
+      "y": 200,
+      "connections": ["ko_verb_sentences"],
+      "description": "Quantify how often routines occur using positive and absolute negative adverbs.",
+      "cheatsheet": "Scale your routines: **자주** (*often*), **가끔** (*sometimes*), **별로** (*not very often*), and **전혀** (*never*). Note: Both **별로** and **전혀** absolute-trigger a negative verb form following them. Example: **불고기를 전혀 안 먹어요** (*I never eat bulgogi*)."
+    },
+    {
+      "id": "ko_transportation_modes",
+      "label": "Transportation & Commuting",
+      "x": 550,
+      "y": -20,
+      "connections": ["ko_interrogative_onje", "ko_buildings_prepositions"],
+      "description": "Describe modes of travel and ask others how they commute to work or school.",
+      "cheatsheet": "Ask 'How do you go?' using **어떻게 가요?**. Mark vehicles with the instrumental direction particle **-으로 / -로**: **비행기로** (*by plane*), **차로** (*by car*), **지하철로** (*by subway*). For walking, use the active adverbial gerund phrase **걸어서** (*by walking/on foot*)."
+    },
+    {
+      "id": "ko_sports_preferences",
+      "label": "Sports & Complex Preferences",
+      "x": 260,
+      "y": 50,
+      "connections": ["ko_verb_sentences"],
+      "description": "Express likes and dislikes regarding sports, distinguishing between 'what' and 'what kind'.",
+      "cheatsheet": "To ask 'What sports do you like?', use the modifier **무슨** (*what*): **무슨 운동을 좋아해요?**. To ask 'What kind of sports do you like?', use **어떤 운동을 좋아해요?** (*What kind of / which type of sports...*). Target your preferences using the verb **좋아해요** (*I like*) or **싫어해요** (*I dislike*), marking the sport with the object particle **-을 / -를**."
+    }
+  ]
+}
