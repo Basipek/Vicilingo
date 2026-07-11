@@ -1,0 +1,195 @@
+{
+  "language": "Polish",
+  "section": "A1_Starter",
+  "nodes": [
+    {
+      "id": "pl_greetings_phrases",
+      "label": "Greetings & Set Phrases",
+      "x": 350,
+      "y": 350,
+      "connections": [],
+      "description": "Master essential daily greetings, introductions, and leaving/returning phrases.",
+      "cheatsheet": "Ask names: **Jak masz na imię?** (*What is your name?*). Leaving/returning patterns: **Wychodzę** (*I'm leaving*) or **Do zobaczenia** (*See you later*). When returning or greeting at home: **Już jestem** (*I'm back*) and **Witaj w domu** (*Welcome home*)."
+    },
+    {
+      "id": "pl_countries_identity",
+      "label": "Countries & Identity",
+      "x": 450,
+      "y": 380,
+      "connections": ["pl_greetings_phrases"],
+      "description": "Talk about nationalities, languages, and core family relationships.",
+      "cheatsheet": "Nationalities change by gender: **Jestem Polakiem** (m) / **Polką** (f). Languages use **po** + adverb: **Mówię po polsku** (*I speak Polish*). For 'Mom', use the warm **mama** or formal **matka**."
+    },
+    {
+      "id": "pl_numbers_large",
+      "label": "Numbers, Hundreds & Thousands",
+      "x": 420,
+      "y": 480,
+      "connections": ["pl_greetings_phrases"],
+      "description": "Count higher figures into hundreds and thousands, and learn basic fractions.",
+      "cheatsheet": "Hundreds: **sto** (100), **dwieście** (200), **trzysta** (300). Thousands: **tysiąc** (1000), **dwa tysiące** (2000). Fractions use **dwie trzecie** for 2/3 (nominative feminine form for parts)."
+    },
+    {
+      "id": "pl_demonstratives_core",
+      "label": "Demonstratives (This, That, Which)",
+      "x": 320,
+      "y": 480,
+      "connections": ["pl_countries_identity"],
+      "description": "Identify objects using gendered proximity pronouns.",
+      "cheatsheet": "Demonstratives must match the noun's gender: **ten** (m), **ta** (f), **to** (n) for 'this'. For 'that': **tamten**, **tamta**, **tamto**. 'Which' is **który** / **która** / **które**."
+    },
+    {
+      "id": "pl_colours_descript",
+      "label": "Colours & Descriptions",
+      "x": 220,
+      "y": 420,
+      "connections": ["pl_demonstratives_core"],
+      "description": "Use basic color vocabulary matching noun genders.",
+      "cheatsheet": "Colors act as adjectives and agree in gender: **czerwony/czerwona/czerwone** (red), **niebieski** (blue), **czarny** (black), **biały** (white), **zielony** (green)."
+    },
+    {
+      "id": "pl_counters_general",
+      "label": "General Counters",
+      "x": 520,
+      "y": 550,
+      "connections": ["pl_numbers_large"],
+      "description": "Count structural physical objects and learn counting shifts.",
+      "cheatsheet": "Counting changes forms: 1 is **jeden/jedna/jedno**. 2, 3, 4 take nominative plural (**dwa domy**), while 5+ triggers genitive plural (**pięć domów**). Ask 'How many?' with **Ile?**."
+    },
+    {
+      "id": "pl_floors_negatives",
+      "label": "Floors & Negative Numbers",
+      "x": 620,
+      "y": 480,
+      "connections": ["pl_numbers_large"],
+      "description": "Navigate building levels, floors, basements, and negative figures.",
+      "cheatsheet": "Floors use ordinal numbers: **pierwsze piętro** (1st floor). Ground floor is **parter**. Basements use **piwnica** or **podziemie**. Negative temperatures/numbers use **minus** (e.g., *minus pięć*)."
+    },
+    {
+      "id": "pl_buildings_prepositions",
+      "label": "Buildings & Prepositions",
+      "x": 200,
+      "y": 550,
+      "connections": ["pl_demonstratives_core"],
+      "description": "Identify common spatial structures and describe basic physical layouts.",
+      "cheatsheet": "Key structures: **budynek** (building), **dworzec** (station). Prepositions require case shifts: **na** (+Locative / on/at), **w** (+Locative / in), **pod** (+Instrumental / under), **za** (+Instrumental / behind)."
+    },
+    {
+      "id": "pl_existence_people",
+      "label": "Existence & Amount of People",
+      "x": 100,
+      "y": 450,
+      "connections": ["pl_buildings_prepositions", "pl_counters_general"],
+      "description": "Express presence using verbs of existence and count human groups.",
+      "cheatsheet": "Use **jest** (there is) and **są** (there are). Negation switches to genitive **nie ma**. Counting people triggers special virile numerals: **dwaj mężczyźni** (2 men) or collective **dwie osoby** (2 people)."
+    },
+    {
+      "id": "pl_time_calendar_anchors",
+      "label": "Relative Time: Day, Week, Month, Year",
+      "x": 480,
+      "y": 250,
+      "connections": ["pl_greetings_phrases"],
+      "description": "Anchor timelines cleanly across relative days, weeks, months, and years.",
+      "cheatsheet": "Timeline grid:\nDays: **przedwczoraj** → **wczoraj** → **dzisiaj** → **jutro** → **pojutrze**.\nWeeks: **zeszły tydzień** → **ten tydzień** → **przyszły tydzień**.\nMonths: **w zeszłym miesiącu** → **w tym miesiącu** → **w przyszłym miesiącu**.\nYears: **w zeszłym roku** → **w tym roku** → **w przyszłym roku**."
+    },
+    {
+      "id": "pl_time_specific",
+      "label": "Specific Time: This Morning & Next Week",
+      "x": 580,
+      "y": 180,
+      "connections": ["pl_time_calendar_anchors"],
+      "description": "Isolate immediate parts of a day or adjacent calendar blocks.",
+      "cheatsheet": "Say 'this morning' using **dziś rano**. 'Next week' is **w przyszłym tygodniu** (uses locative case prepositional structure)."
+    },
+    {
+      "id": "pl_months_days",
+      "label": "Months & Days of the Month",
+      "x": 600,
+      "y": 300,
+      "connections": ["pl_time_calendar_anchors"],
+      "description": "Identify calendar months and navigate ordinal days of the month.",
+      "cheatsheet": "Months: **styczeń** (Jan), **luty** (Feb), etc. Dates use ordinal numbers in genitive case: 'the 1st of May' is **pierwszego maja**; 'the 4th' is **czwartego**."
+    },
+    {
+      "id": "pl_counters_time",
+      "label": "Year & Month Durations",
+      "x": 700,
+      "y": 250,
+      "connections": ["pl_months_days"],
+      "description": "Calculate spans and durations of time using years and month blocks.",
+      "cheatsheet": "Durations of months use **miesiąc** (1), **miesiące** (2-4), **miesięcy** (5+). Years use **rok** (1), **lata** (2-4), **lat** (5+). E.g., *przez dwa lata* (for 2 years)."
+    },
+    {
+      "id": "pl_interrogative_itsu",
+      "label": "Asking 'When' (Kiedy)",
+      "x": 420,
+      "y": 120,
+      "connections": ["pl_time_calendar_anchors"],
+      "description": "Formulate open-ended temporal questions about future, present, or past events.",
+      "cheatsheet": "Use **Kiedy?** (*When?*). Example: **Kiedy jedziesz do Polski?** (*When are you going to Poland?*)."
+    },
+    {
+      "id": "pl_meals_vocab",
+      "label": "Meals & Food Types",
+      "x": 250,
+      "y": 250,
+      "connections": ["pl_greetings_phrases"],
+      "description": "Categorize daily meals and basic cultural food selections.",
+      "cheatsheet": "Meals: **śniadanie** (breakfast), **obiad** (lunch/dinner), **kolacja** (supper). Traditional item example: **sushi** or **pierogi**."
+    },
+    {
+      "id": "pl_verbs_consume",
+      "label": "Consumptive Actions (Eat & Drink)",
+      "x": 150,
+      "y": 200,
+      "connections": ["pl_meals_vocab"],
+      "description": "Utilize active consumption roots for eating and drinking.",
+      "cheatsheet": "Verbs: **jeść** (to eat) and **pić** (to drink). Direct objects following positive verbs take the Accusative case: **Jem sushi** (Accusative)."
+    },
+    {
+      "id": "pl_verb_sentences",
+      "label": "Verb Conjugation & Tenses",
+      "x": 80,
+      "y": 120,
+      "connections": ["pl_verbs_consume"],
+      "description": "Conjugate verbs into affirmative, negative, past, and conditional desire states.",
+      "cheatsheet": "Using **jeść** (to eat):\nAffirmative: **Jem** (*I eat*)\nNegative: Switches object to Genitive! **Nie jem sushi** (*I don't eat sushi*)\nPast: **Jadłem** (m) / **Jadłam** (f) (*I ate*)\nDesire: **Chcę jeść** (*I want to eat*). Question: **Chcesz jeść?** (*Do you want to eat?*)."
+    },
+    {
+      "id": "pl_conjunctions_sequence",
+      "label": "Conjunctions (Oraz & Potem)",
+      "x": 100,
+      "y": 300,
+      "connections": ["pl_verbs_consume"],
+      "description": "Link phrases together or order successive events smoothly.",
+      "cheatsheet": "Use **A także / Oraz** (*And also / Plus*) to add items to a list. Use **Potem / Następnie** (*And then / After that*) to sequence actions chronically."
+    },
+    {
+      "id": "pl_frequency_adverbs",
+      "label": "Frequency of Verbs",
+      "x": -20,
+      "y": 200,
+      "connections": ["pl_verb_sentences"],
+      "description": "Quantify how often routines occur using positive and negative adverbs.",
+      "cheatsheet": "Adverbs: **często** (often), **czasami** (sometimes), **rzadko** (rarely). Negative: **nigdy** (never) *requires a double negative structure*—e.g., **Nigdy nie jem** (*I never eat*)."
+    },
+    {
+      "id": "pl_transportation_modes",
+      "label": "Transportation & Commuting",
+      "x": 550,
+      "y": -20,
+      "connections": ["pl_interrogative_itsu", "pl_buildings_prepositions"],
+      "description": "Describe modes of travel and ask others how they commute.",
+      "cheatsheet": "Ask 'How do you commute?' using **Jak jedziesz do pracy?**. Use **samolotem** (by plane), **samochodem** (by car), **statkiem** (by boat) — all in the Instrumental case. Walking is **pieszo** or **idę na piechotę**."
+    },
+    {
+      "id": "pl_sports_preferences",
+      "label": "Sports & Complex Preferences",
+      "x": 260,
+      "y": 50,
+      "connections": ["pl_verb_sentences"],
+      "description": "Express likes regarding sports, distinguishing between what and what kind.",
+      "cheatsheet": "Ask 'What sports do you like?' with **Co lubisz?** or 'What kind of sports...?' with **Jaki rodzaj sportu lubisz?**. Express preference via **Interesuję się** (+Instrumental) or **Lubię...** (+Accusative)."
+    }
+  ]
+}

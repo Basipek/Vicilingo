@@ -2,15 +2,69 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Vicilingo - Conquest of Language</title>
-    <style>
-        body, html { margin: 0; padding: 0; overflow: hidden; background: #1a1a1a; font-family: sans-serif; color: white; }
-        #canvas-container { width: 100vw; height: 100vh; position: relative; }
-        canvas { display: block; cursor: grab; }
-        canvas:active { cursor: grabbing; }
-        #ui-overlay { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 8px; max-width: 300px; pointer-events: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        button { background: #444; color: #fff; border: 1px solid #666; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-top: 5px;}
-        button:hover { background: #666; }
+    <title>Vicilingo</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/8620/8620034.png">
+    
+<meta name="title" content="Vicilingo">
+<meta name="description" content="Learn languages on your own pace, with less keystrokes and more prompts - automate your topic-based study with Vicilingo!">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://antixbasipek.taile1bff7.ts.net/language">
+<meta property="og:title" content="Vicilingo">
+<meta property="og:description" content="Learn languages on your own pace, with less keystrokes and more prompts - automate your topic-based study with Vicilingo!">
+<meta property="og:image" content="https://antixbasipek.taile1bff7.ts.net/language/static/thumbnailVicilingo.png">
+<meta property="og:site_name" content="Vicilingo">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://antixbasipek.taile1bff7.ts.net/language">
+<meta property="twitter:title" content="Vicilingo">
+<meta property="twitter:description" content="Learn languages on your own pace, with less keystrokes and more prompts - automate your topic-based study with Vicilingo!">
+<meta property="twitter:image" content="https://antixbasipek.taile1bff7.ts.net/language/static/thumbnailVicilingo.png">
+<meta property="twitter:creator" content="@BasipekBus">
+
+<style>
+    body, html { margin: 0; padding: 0; overflow: hidden; background: #1a1a1a; font-family: sans-serif; color: white; }
+    #canvas-container { width: 100vw; height: 100vh; position: relative; }
+    canvas { display: block; cursor: grab; }
+    canvas:active { cursor: grabbing; }
+    
+    /* Left side details card */
+    #ui-overlay { 
+        position: absolute; top: 20px; left: 20px; 
+        background: rgba(20, 20, 20, 0.95); padding: 20px; 
+        border-radius: 8px; width: 320px; pointer-events: auto; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.7); border: 1px solid #333;
+    }
+    
+    /* Right side Shopping Bag container (hidden off-screen by default) */
+    #shopping-bag-container {
+        position: absolute; top: 20px; right: -360px; /* Hidden off-screen */
+        width: 320px; background: rgba(25, 25, 25, 0.95); 
+        padding: 20px; border-radius: 8px; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.7); border: 1px solid #444;
+        transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        pointer-events: auto;
+    }
+    #shopping-bag-container.active {
+        right: 20px; /* Slides smoothly into position */
+    }
+
+    button { 
+        background: #5f27cd; color: #fff; border: none; 
+        padding: 8px 12px; border-radius: 4px; cursor: pointer; 
+        margin-top: 10px; font-weight: bold; width: 100%; transition: background 0.2s;
+    }
+    button:hover { background: #341f97; }
+    select {
+        background: #333; color: white; border: 1px solid #555;
+        padding: 5px; border-radius: 4px; width: 100%; margin: 8px 0;
+    }
+    .bag-item {
+        background: rgba(255,255,255,0.05); padding: 8px; 
+        border-radius: 4px; margin-bottom: 8px; border-left: 3px solid #ff9f43;
+    }
         
 		footer {
             position: fixed;
@@ -34,16 +88,23 @@
     <div id="ui-overlay">
         <h2>⚔️ Vicilingo Map</h2>
         <div id="node-details">Click a node to inspect...</div>
-        <button onclick="testLLMCall()">Test Gym LLM Call</button>
+    </div>
+
+    <div id="shopping-bag-container">
+        <h2 style="color: #ff9f43; margin-top: 0;">🛒 Study Shopping Bag</h2>
+        <div id="bag-items-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;">
+            <p style="color: #888;">Bag is empty. Add ingredients to start brewing exercises.</p>
+        </div>
+        <button id="pull-exercise-btn" onclick="triggerGymCompilation()">🍳 Pull Exercise</button>
     </div>
     
     	<footer>
         <p style="margin: 0;">&copy; 2026 Virtual Handset Project by <a href="/">Basipek</a></p>
-        <nav style="margin-top: 5px;">
+        <!-- nav style="margin-top: 5px;">
             Powered by <a href="https://jssip.com" target="_blank">JsSIP</a> | 
             <a href="https://antisip.com" target="_blank">AntiSIP</a>
-        </nav>
-        <p style="margin: 5px 0 0 0;"><button class="btn-small" onclick="document.getElementById('kvkk-modal').style.display='flex'">View Privacy Policy</button></p>
+        </nav -->
+        <!-- p style="margin: 5px 0 0 0;"><button class="btn-small" onclick="document.getElementById('kvkk-modal').style.display='flex'">View Privacy Policy</button></p -->
 		<a href="https://achecker.ca/">
 </a>
     </footer>
@@ -66,61 +127,118 @@ let nodes = [];
 const bgImage = new Image();
 bgImage.src = 'https://static.vecteezy.com/system/resources/thumbnails/035/393/988/small_2x/world-map-modern-globe-map-generalized-world-map-world-map-on-isolated-background-illustration-vector.jpg';
 
-// Fetch Mock Japanese Nodes
-fetch('/language/api/nodes/jp_dummy')
+// Fetch All Node Clusters across the filesystem
+fetch('/language/api/nodes/all')
     .then(res => res.json())
     .then(data => {
-        nodes = data.nodes;
-        draw();
+        nodes = []; // Clear current canvas array
+        
+        // Flatten nested JSON groups (Language -> Section -> Nodes Array)
+        Object.keys(data.languages).forEach(lang => {
+            Object.keys(data.languages[lang]).forEach(section => {
+                let sectionNodes = data.languages[lang][section];
+                nodes = nodes.concat(sectionNodes);
+            });
+        });
+        
+        draw(); // Render to the canvas layout
     });
 
+// Keep track of calculated categories to render flags exactly once at their column roots
 function draw() {
     ctx.clearRect(0, 0, width, height);
     ctx.save();
-    // Move camera position
     ctx.translate(camera.x, camera.y);
 
     // Draw background image scaled out
     if (bgImage.complete) {
-        ctx.globalAlpha = 0.15; // Unobtrusive background
-        ctx.drawImage(bgImage, 0, 0, 1600, 1000);
+        ctx.globalAlpha = 0.15;
+        ctx.drawImage(bgImage, 0, 0, 2400, 1600); // Expanded boundary slightly
         ctx.globalAlpha = 1.0;
     }
 
-    // Draw lines/ribbons between connections
+    // 1. Group nodes by language and sub-sections to dynamically compute mapping vectors
+    const groups = {};
+    nodes.forEach(node => {
+        const lang = node.id.split('_')[0].toUpperCase(); // E.g., "JP"
+        if (!groups[lang]) groups[lang] = [];
+        groups[lang].push(node);
+    });
+
+    const langKeys = Object.keys(groups);
+    const calculatedPositions = {}; // Map: node.id -> {x, y}
+
+    // Grid layout adjustments
+    const startX = 200;
+    const startY = 800; // Baseline floor height
+    const laneWidth = 400; // Distance between languages
+    const stepY = 90;     // Vertical distance per node node
+    const weaveX = 60;     // Snake horizontal amplitude shift
+
+    // Compute Snake Layout Vectors dynamically
+    langKeys.forEach((lang, lIdx) => {
+        const langNodes = groups[lang];
+        const langOriginX = startX + (lIdx * laneWidth);
+
+        // Draw Language Header/Flag Indicator at the base floor of the lane
+        ctx.fillStyle = '#ff9f43';
+        ctx.font = 'bold 20px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`🚩 LANGUAGE: ${lang}`, langOriginX, startY + 50);
+
+        // Calculate staggered upward coordinate coordinates
+        langNodes.forEach((node, nIdx) => {
+            // Alternate horizontal sway left and right per node index step to produce a snake chain
+            const sway = (nIdx % 2 === 0) ? weaveX : -weaveX;
+            calculatedPositions[node.id] = {
+                x: langOriginX + sway,
+                y: startY - (nIdx * stepY)
+            };
+            
+            // Assign back to the object memory layer for click/drag mouse collision bounding evaluations
+            node.x = calculatedPositions[node.id].x;
+            node.y = calculatedPositions[node.id].y;
+        });
+    });
+
+    // 2. Render Connection Ribbons between calculated indices
     ctx.strokeStyle = '#ff9f43';
     ctx.lineWidth = 3;
     ctx.setLineDash([5, 5]);
     nodes.forEach(node => {
-        if(node.connections) {
+        const pos = calculatedPositions[node.id];
+        if (pos && node.connections) {
             node.connections.forEach(targetId => {
-                let target = nodes.find(n => n.id === targetId);
-                if(target) {
+                const targetPos = calculatedPositions[targetId];
+                if (targetPos) {
                     ctx.beginPath();
-                    ctx.moveTo(node.x, node.y);
-                    ctx.lineTo(target.x, target.y);
+                    ctx.moveTo(pos.x, pos.y);
+                    ctx.lineTo(targetPos.x, targetPos.y);
                     ctx.stroke();
                 }
             });
         }
     });
-    ctx.setLineDash([]); // Reset dash
+    ctx.setLineDash([]); // Reset line formatting
 
-    // Draw Nodes
+    // 3. Render Circular Interactive Nodes
     nodes.forEach(node => {
+        const pos = calculatedPositions[node.id];
+        if (!pos) return;
+
         ctx.beginPath();
-        ctx.arc(node.x, node.y, 25, 0, Math.PI * 2);
+        ctx.arc(pos.x, pos.y, 25, 0, Math.PI * 2);
         ctx.fillStyle = '#5f27cd';
         ctx.fill();
         ctx.lineWidth = 3;
         ctx.strokeStyle = '#fff';
         ctx.stroke();
 
-        // Labels
+        // Node Title Overlay Formatting
         ctx.fillStyle = '#fff';
         ctx.font = '14px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(node.label, node.x, node.y - 35);
+        ctx.fillText(node.label, pos.x, pos.y - 35);
     });
 
     ctx.restore();
@@ -136,7 +254,7 @@ window.addEventListener('mousedown', (e) => {
     let canvasY = e.clientY - camera.y;
     let clickedNode = nodes.find(n => Math.hypot(n.x - canvasX, n.y - canvasY) < 25);
     
-    if(clickedNode) {
+    if(clickedNode && !activeSessionQueue) {
         document.getElementById('node-details').innerHTML = `
             <h3>${clickedNode.label}</h3>
             <p>${clickedNode.description}</p>
@@ -146,6 +264,38 @@ window.addEventListener('mousedown', (e) => {
         isDragging = true;
         startDrag.x = e.clientX - camera.x;
         startDrag.y = e.clientY - camera.y;
+    }
+});
+
+
+defaultTier = "B2";
+// Double Click Handler to instantly add a node directly to the shopping bag
+window.addEventListener('dblclick', (e) => {
+    // Ignore double clicks if the user is interacting with HTML menus/overlays
+    if (e.target.closest('#ui-overlay') || e.target.closest('#shopping-bag-container')) return;
+    
+    // Translate screen space coordinates into active internal canvas matrix bounds
+    let canvasX = e.clientX - camera.x;
+    let canvasY = e.clientY - camera.y;
+    
+    // Check if a node boundary was struck (radius 25 matches your draw routine)
+    let doubleClickedNode = nodes.find(n => Math.hypot(n.x - canvasX, n.y - canvasY) < 25);
+    
+    if (doubleClickedNode) {
+        // Extract language tracking prefix (e.g., "jp_grammar_1" -> "JP")
+        const parsedLanguage = doubleClickedNode.id.split('_')[0].toUpperCase();
+        
+        // Trigger your global array mixture push sequence
+        addToMixture(
+            doubleClickedNode.label,
+            doubleClickedNode.description,
+            doubleClickedNode.cheatsheet,
+            parsedLanguage,
+            defaultTier
+        );
+        
+        // Operational UX flourish: Spawn text visualizer notification right under the mouse
+        spawnFloatingLabel(`[${parsedLanguage}] ${doubleClickedNode.label} Mixed!`, "#ff9f43");
     }
 });
 
@@ -164,28 +314,396 @@ window.addEventListener('resize', () => {
 });
 bgImage.onload = () => draw();
 
-// Gym API Call demonstration
-function testLLMCall() {
+// Global Session Engine State Variables
+let activeSessionQueue = [];
+let sessionTotalAttempts = 0;
+let sessionCorrectAnswers = 0;
+let sessionTotalMistakes = 0;
+let sessionMistakenTopics = {}; // Tracks { topicName: mistakeCount }
+let sessionAllTopicsInPlay = new Set();
+let sessionFailedTopics = new Set(); // Topics that suffered at least one mistake
+
+// Upgraded Gym Engine API Caller
+function testLLMCall(shoppingBagItems) {
     const details = document.getElementById('node-details');
-    details.innerHTML = "Fetching custom exercise from OpenRouter...";
+    details.innerHTML = "⚡ Forging custom conquest exercises from OpenRouter...";
+    
+    if (!shoppingBagItems || shoppingBagItems.length === 0) {
+        details.innerHTML = `<span style="color:#ff4d4d">Error: Shopping bag is empty!</span>`;
+        return;
+    }
+
+    const payload = {
+        ingredients: shoppingBagItems.map(item => ({
+            topic: item[0],
+            description: item[1],
+            cheatsheet: item[2],
+            language: item[3],
+            difficulty: item[4]
+        }))
+    };
     
     fetch('/language/api/generate-exercise', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({topics: ['Hiragana Vowels'], difficulty: 'A1'})
+        body: JSON.stringify(payload)
     })
     .then(res => res.json())
     .then(data => {
         if(data.error) throw new Error(data.error);
-        details.innerHTML = `
-            <h4>Exercise generated!</h4>
-            <p>${data.question}</p>
-            ${data.options.map(opt => `<button onclick="alert('${opt === data.answer ? 'XP Earned! Great!' : 'Wrong answer!'}')">${opt}</button>`).join('<br>')}
-        `;
+        if(!data.exercises || data.exercises.length === 0) throw new Error("No exercises returned from matrix.");
+        
+        // Initialize/Reset State tracking variables for the current session run
+        activeSessionQueue = data.exercises;
+        sessionTotalAttempts = 0;
+        sessionCorrectAnswers = 0;
+        sessionTotalMistakes = 0;
+        sessionMistakenTopics = {};
+        sessionAllTopicsInPlay = new Set(shoppingBagItems.map(item => item[0]));
+        sessionFailedTopics = new Set();
+
+        // Fire off the first layout render
+        renderCurrentQuestion();
+        resetPullButton();
     })
     .catch(err => {
-        details.innerHTML = `<span style="color:red">Error: ${err.message}</span>`;
+        details.innerHTML = `<span style="color:#ff4d4d">Error: ${err.message}</span>`;
     });
+}
+
+// Render Engine Loop
+function renderCurrentQuestion() {
+    const details = document.getElementById('node-details');
+    
+    if (activeSessionQueue.length === 0) {
+        renderSummary();
+        return;
+    }
+
+    const current = activeSessionQueue[0];
+    
+    // Safely escape single quotes for click macros
+    const escapedAnswer = current.answer.replace(/'/g, "\\'");
+    const escapedTopic = current.topic.replace(/'/g, "\\'");
+
+    details.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #444; padding-bottom:5px; margin-bottom:10px;">
+            <span style="font-size:0.85em; color:#ff9f43; font-weight:bold;">🎯 ${current.topic}</span>
+            <span style="font-size:0.8em; background:#333; padding:2px 6px; border-radius:3px;">Remaining: ${activeSessionQueue.length}</span>
+        </div>
+        <p style="font-size: 1.1em; margin-bottom: 15px;">${current.question}</p>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+            ${current.options.map(opt => {
+                const escapedOpt = opt.replace(/'/g, "\\'");
+                return `<button onclick="evaluateSessionAnswer(event, '${escapedOpt}', '${escapedAnswer}', '${escapedTopic}')">${opt}</button>`;
+            }).join('')}
+            
+            <button onclick="passSessionQuestion(event, '${escapedTopic}')" style="background:#2c3e50; margin-top:15px; border:1px solid #34495e;">
+                ➡️ PASS / SKIP
+            </button>
+        </div>
+    `;
+}
+
+// Interactive Answer Verification Engine
+function evaluateSessionAnswer(event, selected, correct, topic) {
+    sessionTotalAttempts++;
+    const currentQuestionObject = activeSessionQueue.shift(); // Pull out current question
+
+    if (selected === correct) {
+        sessionCorrectAnswers++;
+        spawnFloatingLabel("CORRECT!", "#2ecc71");
+    } else {
+        sessionTotalMistakes++;
+        sessionFailedTopics.add(topic);
+        sessionMistakenTopics[topic] = (sessionMistakenTopics[topic] || 0) + 1;
+        
+        spawnFloatingLabel("OOPS!", "#f1c40f");
+        
+        // Adaptive recycling: shuffle back to a random upcoming array index position or shove to the end
+        const insertIndex = Math.floor(Math.random() * (activeSessionQueue.length + 1));
+        activeSessionQueue.splice(insertIndex, 0, currentQuestionObject);
+    }
+
+    // Small structural timeout delay to let the user process the indicator before layout refresh
+    setTimeout(renderCurrentQuestion, 300);
+}
+
+// Pass System Routine
+function passSessionQuestion(event, topic) {
+    spawnFloatingLabel("PASSED~", "#3498db");
+    
+    // Cycle item to the back of the queue cleanly without counting it as an analytical attempt
+    const passedItem = activeSessionQueue.shift();
+    //activeSessionQueue.push(passedItem);
+    
+    setTimeout(renderCurrentQuestion, 300);
+}
+
+function spawnFloatingLabel(text, color) {
+    const label = document.createElement('div');
+    label.innerText = text;
+    
+    // Hardened styling system to force browser paint override
+    label.style.position = 'fixed'; 
+    label.style.display = 'block';
+    label.style.visibility = 'visible';
+    label.style.opacity = '1';
+    
+    // Core Visuals
+    label.style.color = color;
+    label.style.fontWeight = 'bold';
+    label.style.fontSize = '1.4em';
+    label.style.fontFamily = 'sans-serif';
+    label.style.zIndex = '9999999'; 
+    label.style.pointerEvents = 'none';
+    label.style.whiteSpace = 'nowrap';
+    
+    // Text Shadowing Strategy
+    label.style.textShadow = '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 2px 4px rgba(0,0,0,0.9)';
+
+    // Force hardware acceleration to prevent canvas surface bleeding
+    label.style.willChange = 'transform, opacity';
+    label.style.transform = 'translate3d(0, 0, 0)';
+
+    // Coordinate Math
+    let spawnX, spawnY;
+    if (globalMousePos.x !== null && globalMousePos.y !== null) {
+        spawnX = globalMousePos.x;
+        spawnY = globalMousePos.y;
+    } else {
+        spawnX = window.innerWidth / 2;
+        spawnY = window.innerHeight / 2;
+        label.style.transform = 'translate3d(-50%, -50%, 0)';
+    }
+    
+    label.style.left = `${spawnX}px`;
+    label.style.top = `${spawnY - 20}px`;
+    
+    // Configuration Transition Speeds explicitly 
+    label.style.transition = 'transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out';
+    
+    document.getElementById("canvas-container").appendChild(label);
+    
+    // Double requestAnimationFrame hack to ensure layout registration before transition fire
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            const baseline = (globalMousePos.x === null) ? 'translate3d(-50%, -50%, 0) ' : '';
+            label.style.transform = `${baseline}translate3d(0, -80px, 0)`;
+            label.style.opacity = '0';
+        });
+    });
+    
+    setTimeout(() => label.remove(), 1000);
+}
+
+// Global tracking for floating labels fallback mechanics
+let globalMousePos = { x: null, y: null };
+
+window.addEventListener('mousemove', (e) => {
+    globalMousePos.x = e.clientX;
+    globalMousePos.y = e.clientY;
+});
+
+// Post-Conquest Diagnostics Dashboard
+function renderSummary() {
+    const details = document.getElementById('node-details');
+    
+    // Compute dynamic accuracy percentage metrics
+    const accuracy = sessionTotalAttempts > 0 ? ((sessionCorrectAnswers / sessionTotalAttempts) * 100).toFixed(0) : 0;
+    
+    // Parse Mistake Strings
+    let mistakeBlocks = Object.keys(sessionMistakenTopics).map(topic => {
+        return `<li style="color:#e74c3c;">${topic}: <b>${sessionMistakenTopics[topic]}</b> missed</li>`;
+    }).join('');
+    if(!mistakeBlocks) mistakeBlocks = `<span style="color:#2ecc71;">None! Absolute dominance.</span>`;
+
+    // Parse Correct Topics (Total set minus failed set matrix)
+    const correctTopics = [...sessionAllTopicsInPlay].filter(t => !sessionFailedTopics.has(t));
+    let correctBlocks = correctTopics.map(topic => `<li style="color:#2ecc71;">${topic}</li>`).join('');
+    if(!correctBlocks) correctBlocks = `<span style="color:#aaa;">No clean sweeps this run.</span>`;
+
+    details.innerHTML = `
+        <h3 style="color:#ff9f43; border-bottom:1px solid #444; padding-bottom:5px;">Conquest Complete!</h3>
+        <p style="font-weight:bold; font-size:1.1em;">Accuracy: <span style="color:#ff9f43;">${accuracy}%</span></p>
+        
+        <div style="margin: 12px 0; background:rgba(255,255,255,0.03); padding:8px; border-radius:4px;">
+            <b>Mistake Topics:</b>
+            <ul style="margin:5px 0; padding-left:20px; font-size:0.9em;">${mistakeBlocks}</ul>
+        </div>
+
+        <div style="margin: 12px 0; background:rgba(255,255,255,0.03); padding:8px; border-radius:4px;">
+            <b>Correct Topics:</b>
+            <ul style="margin:5px 0; padding-left:20px; font-size:0.9em;">${correctBlocks}</ul>
+        </div>
+        
+        <div style="font-family:monospace; font-size:1.05em; margin-top:15px; padding-top:10px; border-top:1px dashed #555;">
+            Total Attempts: <span style="color:#fff; font-weight:bold;">${sessionTotalAttempts}</span> | 
+            <span style="color:#2ecc71; font-weight:bold;">${sessionCorrectAnswers} Correct</span> | 
+            <span style="color:#e74c3c; font-weight:bold;">${sessionTotalMistakes} Mistakes</span>
+        </div>
+        
+        <button onclick="document.getElementById('node-details').innerHTML = 'Click a node to inspect...';" style="background:#333; margin-top:15px;">
+            Return to Map
+        </button>
+    `;
+}
+
+// Simple evaluation handler helper
+function evaluateAnswer(selected, correct) {
+    if (selected === correct) {
+        alert('🎉 XP Earned! Great! (Trigger particle effects here)');
+    } else {
+        alert('❌ Wrong answer! Keep conquering!');
+    }
+}
+
+// Global State Storage
+let shoppingBag = []; 
+let currentSelectedNode = null; 
+
+// Mouse Click/Drag routing evaluator
+window.addEventListener('mousedown', (e) => {
+    // Prevent dragging if interacting with UI overlays
+    if(e.target.closest('#ui-overlay') || e.target.closest('#shopping-bag-container')) return;
+    
+    let canvasX = e.clientX - camera.x;
+    let canvasY = e.clientY - camera.y;
+    let clickedNode = nodes.find(n => Math.hypot(n.x - canvasX, n.y - canvasY) < 25);
+    
+    if(clickedNode) {
+        currentSelectedNode = clickedNode; // Cache globally to access dynamically
+        
+        // Dynamically append description, cheatsheet, difficulty selectors, and submission actions
+        document.getElementById('node-details').innerHTML = `
+            <h3>${clickedNode.label}</h3>
+            <p>${clickedNode.description}</p>
+            <small><b>Cheat:</b> ${clickedNode.cheatsheet}</small>
+            
+            <div style="margin-top: 15px; border-top: 1px dashed #444; padding-top: 10px;">
+                <label for="difficulty-select"><b>Target Tier Level:</b></label>
+                <select id="difficulty-select">
+                    <option value="A1">A1 - Novice</option>
+                    <option value="A2">A2 - Beginner</option>
+                    <option value="B1">B1 - Intermediate</option>
+                    <option value="B2">B2 - Advanced</option>
+                    <option value="C1">C1 - Expert</option>
+                    <option value="C2">C2 - Mastery</option>
+                </select>
+                
+                <button onclick="handleAddClick()">📥 Add To Mixture</button>
+            </div>
+        `;
+    } else {
+        isDragging = true;
+        startDrag.x = e.clientX - camera.x;
+        startDrag.y = e.clientY - camera.y;
+    }
+});
+
+// Structural middleman function to unpack values from UI layer cleanly
+function handleAddClick() {
+    if(!currentSelectedNode) return;
+    
+    const difficulty = document.getElementById('difficulty-select').value;
+    defaultTier = difficulty; 
+    
+    // Parse language tracking code from node prefix (e.g., "jp_hiragana_1" -> "JP")
+    const parsedLanguage = currentSelectedNode.id.split('_')[0].toUpperCase();
+    
+    addToMixture(
+        currentSelectedNode.label,
+        currentSelectedNode.description,
+        currentSelectedNode.cheatsheet,
+        parsedLanguage,
+        difficulty
+    );
+}
+
+function addToMixture(topicName, desc, cheatsheet, language, difficulty) {
+    // Append structured sub-array data directly into your global tracker matrix
+    shoppingBag.push([topicName, desc, cheatsheet, language, difficulty]);
+    
+    // If the shopping bag is no longer empty, activate visibility transitions
+    if (shoppingBag.length > 0) {
+        document.getElementById('shopping-bag-container').classList.add('active');
+    }
+    
+    // Re-render the shopping bag visual panel contents
+    renderShoppingBag();
+}
+
+function renderShoppingBag() {
+    const listContainer = document.getElementById('bag-items-list');
+    
+    if (shoppingBag.length === 0) {
+        listContainer.innerHTML = `<p style="color: #888;">Bag is empty. Add ingredients to start brewing exercises.</p>`;
+        document.getElementById('shopping-bag-container').classList.remove('active');
+        return;
+    }
+    
+    // Build internal listing mapping multi-dimensional array values securely
+    listContainer.innerHTML = shoppingBag.map((item, index) => {
+        const [topicName, desc, cheatsheet, language, difficulty] = item;
+        return `
+            <div class="bag-item" style="position: relative; padding-right: 30px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: bold; color: #ff9f43;">[${language}] ${topicName}</span>
+                    <span style="font-size: 0.85em; background: #444; padding: 2px 6px; border-radius:3px; margin-right: 15px;">${difficulty}</span>
+                </div>
+                <div style="font-size: 0.8em; color: #aaa; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                    ${desc}
+                </div>
+                <!-- Inline Remove Button -->
+                <button onclick="removeFromMixture(${index})" style="
+                    position: absolute; top: 6px; right: 8px; 
+                    background: transparent; color: #ff4d4d; border: none; 
+                    width: auto; padding: 0; margin: 0; cursor: pointer; 
+                    font-size: 0.9em; display: inline;
+                " title="Remove Topic">✕</button>
+            </div>
+        `;
+    }).join('');
+}
+
+function removeFromMixture(index) {
+    // Remove exactly 1 element at the given index position
+    shoppingBag.splice(index, 1);
+    
+    // Update the UI panel to reflect changes or auto-hide if empty
+    renderShoppingBag();
+}
+
+// Compile everything in the bag into unified arrays for the backend route
+function triggerGymCompilation() {
+    if (shoppingBag.length === 0) return;
+    
+    // Disable the button to prevent spam
+    const btn = document.getElementById('pull-exercise-btn');
+    btn.disabled = true;
+    btn.innerText = "Forging Exercise...";
+    btn.style.opacity = "0.5";
+    btn.style.cursor = "not-allowed";
+    
+    spawnFloatingLabel("~Generating~", "#3498db");
+    
+    // Call the Gym engine
+    testLLMCall(shoppingBag);
+    
+    // Note: We do NOT re-enable the button inside triggerGymCompilation
+    // because testLLMCall is asynchronous. 
+    // We should re-enable it inside testLLMCall's .then() and .catch() blocks.
+}
+
+// Helper to reset the UI state of the button
+function resetPullButton() {
+    const btn = document.getElementById('pull-exercise-btn');
+    if (btn) {
+        btn.disabled = false;
+        btn.innerText = "🍳 Pull Exercise";
+        btn.style.opacity = "1";
+        btn.style.cursor = "pointer";
+    }
 }
 </script>
 </body>

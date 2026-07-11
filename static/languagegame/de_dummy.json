@@ -1,0 +1,195 @@
+{
+  "language": "German",
+  "section": "A1_Starter",
+  "nodes": [
+    {
+      "id": "de_greetings_phrases",
+      "label": "Greetings & Set Phrases",
+      "x": 350,
+      "y": 350,
+      "connections": [],
+      "description": "Master essential daily greetings, name introductions, and departures.",
+      "cheatsheet": "Ask names: **Wie heißen Sie?** / **Wie heißt du?**. Leaving/returning phrases: **Ich gehe jetzt** (*I'm leaving now*) or **Auf Wiedersehen**. Home arrivals: **Ich bin wieder da** (*I'm back*) and **Willkommen zurück** (*Welcome back*)."
+    },
+    {
+      "id": "de_countries_identity",
+      "label": "Countries & Identity",
+      "x": 450,
+      "y": 380,
+      "connections": ["de_greetings_phrases"],
+      "description": "Talk about nationalities, languages, and core family relationships.",
+      "cheatsheet": "Nationalities append suffix variations: **Ich bin Deutscher** (m) / **Deutsche** (f). Languages use standalone nouns: **Ich spreche Deutsch**. For 'Mom', use **Mama** or the formal **Mutter**."
+    },
+    {
+      "id": "de_numbers_large",
+      "label": "Numbers, Hundreds & Thousands",
+      "x": 420,
+      "y": 480,
+      "connections": ["de_greetings_phrases"],
+      "description": "Count higher figures into hundreds and thousands, and learn basic fractions.",
+      "cheatsheet": "Hundreds: **einhundert** (100), **zweihundert** (200). Thousands: **eintausend** (1000). Fractions combine cardinal numbers and a special suffix: 2/3 is **zwei Drittel**."
+    },
+    {
+      "id": "de_demonstratives_core",
+      "label": "Demonstratives (This, That, Which)",
+      "x": 320,
+      "y": 480,
+      "connections": ["de_countries_identity"],
+      "description": "Identify objects using gender-coded demonstrative articles.",
+      "cheatsheet": "Demonstratives decline by case and gender: **dieser** (m), **diese** (f), **dieses** (n) for 'this'. 'That' uses stressed articles: **der**, **die**, **das**. 'Which' is **welcher/welche/welches**."
+    },
+    {
+      "id": "de_colours_descript",
+      "label": "Colours & Descriptions",
+      "x": 220,
+      "y": 420,
+      "connections": ["de_demonstratives_core"],
+      "description": "Use basic color adjectives to describe objects.",
+      "cheatsheet": "Colors are lowercase adjectives: **rot** (red), **blau** (blue), **schwarz** (black), **weiß** (white), **grün** (green). If used before nouns, they require adjective endings (e.g., *ein rotes Buch*)."
+    },
+    {
+      "id": "de_counters_general",
+      "label": "General Counters",
+      "x": 520,
+      "y": 550,
+      "connections": ["de_numbers_large"],
+      "description": "Count plural items accurately using structural plural endings.",
+      "cheatsheet": "German does not use counter words, but changes the noun plural form (e.g., *ein Buch*, *zwei Bücher*). Ask 'How many?' using **Wie viele?**."
+    },
+    {
+      "id": "de_floors_negatives",
+      "label": "Floors & Negative Numbers",
+      "x": 620,
+      "y": 480,
+      "connections": ["de_numbers_large"],
+      "description": "Navigate building levels, floors, basements, and negative figures.",
+      "cheatsheet": "Count floors using ordinals: **erster Stock** (1st floor). Ground floor is **Erdgeschoss**. Basement is **Untergeschoss** or **Keller**. Negative values/temperatures use **minus** (*minus fünf*)."
+    },
+    {
+      "id": "de_buildings_prepositions",
+      "label": "Buildings & Prepositions",
+      "x": 200,
+      "y": 550,
+      "connections": ["de_demonstratives_core"],
+      "description": "Identify common spatial structures and use two-way prepositions.",
+      "cheatsheet": "Structures: **das Gebäude** (building), **der Bahnhof** (station). Prepositions are two-way (Dative for location): **auf** (on top), **unter** (under), **vor** (in front), **hinter** (behind). E.g., *vor dem Bahnhof*."
+    },
+    {
+      "id": "de_existence_people",
+      "label": "Existence & Amount of People",
+      "x": 100,
+      "y": 450,
+      "connections": ["de_buildings_prepositions", "de_counters_general"],
+      "description": "Differentiate spatial existence and express amounts of people.",
+      "cheatsheet": "Use the existential idiom **es gibt** (+Accusative) for general existence, or **ist/sind** for specific location. Count people normally with regular numbers: **zwei Personen** (two people)."
+    },
+    {
+      "id": "de_time_calendar_anchors",
+      "label": "Relative Time: Day, Week, Month, Year",
+      "x": 480,
+      "y": 250,
+      "connections": ["de_greetings_phrases"],
+      "description": "Anchor timelines cleanly across relative days, weeks, months, and years.",
+      "cheatsheet": "Timeline grid:\nDays: **vorgestern** → **gestern** → **heute** → **morgen** → **übermorgen**.\nWeeks: **letzte Woche** → **diese Woche** → **nächste Woche**.\nMonths: **letzten Monat** → **diesen Monat** → **nächsten Monat**.\nYears: **letztes Jahr** → **dieses Jahr** → **nächstes Jahr**."
+    },
+    {
+      "id": "de_time_specific",
+      "label": "Specific Time: This Morning & Next Week",
+      "x": 580,
+      "y": 180,
+      "connections": ["de_time_calendar_anchors"],
+      "description": "Isolate immediate parts of a day or adjacent calendar blocks.",
+      "cheatsheet": "Isolate times: **heute Morgen** (*this morning*) — do not confuse with *morgen* (tomorrow). 'Next week' is **nächste Woche**."
+    },
+    {
+      "id": "de_months_days",
+      "label": "Months & Days of the Month",
+      "x": 600,
+      "y": 300,
+      "connections": ["de_time_calendar_anchors"],
+      "description": "Identify calendar months and navigate dative ordinal calendar dates.",
+      "cheatsheet": "Months: **Januar**, **Februar**, etc. Dates use dative ordinal suffixes after **am**: 'on May 1st' is **am ersten Mai**; 'on the 4th' is **am vierten**."
+    },
+    {
+      "id": "de_counters_time",
+      "label": "Year & Month Durations",
+      "x": 700,
+      "y": 250,
+      "connections": ["de_months_days"],
+      "description": "Calculate spans and durations of time using years and month blocks.",
+      "cheatsheet": "Express time lengths with **Monat(e)** or **Jahr(e)** following the preposition **für** (+Accusative) or **seit** (+Dative): e.g., *für zwei Monate* (for two months)."
+    },
+    {
+      "id": "de_interrogative_itsu",
+      "label": "Asking 'When' (Wann)",
+      "x": 420,
+      "y": 120,
+      "connections": ["de_time_calendar_anchors"],
+      "description": "Formulate open-ended temporal questions about future, present, or past events.",
+      "cheatsheet": "Use the question word **Wann?** (*When?*). Example: **Wann fliegst du nach Deutschland?** (*When are you flying to Germany?*)."
+    },
+    {
+      "id": "de_meals_vocab",
+      "label": "Meals & Food Types",
+      "x": 250,
+      "y": 250,
+      "connections": ["de_greetings_phrases"],
+      "description": "Categorize daily meals and basic dish selections.",
+      "cheatsheet": "Meals: **das Frühstück** (breakfast), **das Mittagessen** (lunch), **das Abendessen** (dinner). Food item example: **Sushi**."
+    },
+    {
+      "id": "de_verbs_consume",
+      "label": "Consumptive Actions (Eat & Drink)",
+      "x": 150,
+      "y": 200,
+      "connections": ["de_meals_vocab"],
+      "description": "Utilize active consumption roots for eating and drinking.",
+      "cheatsheet": "Verbs: **essen** (to eat - irregular change: *du isst*) and **trinken** (to drink). Direct objects drop into the Accusative case: **Ich trinke einen Tee** (m. Accusative)."
+    },
+    {
+      "id": "de_verb_sentences",
+      "label": "Verb Conjugation & Tenses",
+      "x": 80,
+      "y": 120,
+      "connections": ["de_verbs_consume"],
+      "description": "Conjugate polite actions into affirmative, negative, past, and modal desire states.",
+      "cheatsheet": "Structural examples using **essen**:\nAffirmative: **Ich esse** (*I eat*)\nNegative: **Ich esse kein Sushi** (noun negation via *kein*)\nPast: Conversational past uses *haben* + past participle: **Ich habe Sushi gegessen**\nDesire: Modal verb **möchte** + infinitive at the end: **Ich möchte Sushi essen**. Question: **Möchtest du Sushi essen?**."
+    },
+    {
+      "id": "de_conjunctions_sequence",
+      "label": "Conjunctions (Und auch & Danach)",
+      "x": 100,
+      "y": 300,
+      "connections": ["de_verbs_consume"],
+      "description": "Link phrases together or order successive events smoothly.",
+      "cheatsheet": "Use **Und auch / Sowie** (*And also / Plus*) to add arguments. Use **Danach / Dann** (*And then / After that*) to sequence events—triggers inversion: *Danach esse ich*."
+    },
+    {
+      "id": "de_frequency_adverbs",
+      "label": "Frequency of Verbs",
+      "x": -20,
+      "y": 200,
+      "connections": ["de_verb_sentences"],
+      "description": "Quantify how often routines occur using positive and negative adverbs.",
+      "cheatsheet": "Scale routines: **oft** (often), **manchmal** (sometimes), **selten** (rarely), and **nie** (never). Example: **Ich esse nie Fleisch** (*I never eat meat*)."
+    },
+    {
+      "id": "de_transportation_modes",
+      "label": "Transportation & Commuting",
+      "x": 550,
+      "y": -20,
+      "connections": ["de_interrogative_itsu", "de_buildings_prepositions"],
+      "description": "Describe modes of travel and ask others how they commute.",
+      "cheatsheet": "Ask 'How do you go to work?' with **Wie kommst du zur Arbeit?**. Mark vehicles with preposition **mit** (+Dative): **mit dem Flugzeug** (by plane), **mit dem Auto** (by car), **mit dem Schiff** (by boat). Walking uses the idiom: **zu Fuß**."
+    },
+    {
+      "id": "de_sports_preferences",
+      "label": "Sports & Complex Preferences",
+      "x": 260,
+      "y": 50,
+      "connections": ["de_verb_sentences"],
+      "description": "Express preferences regarding sports, distinguishing what vs. what kind.",
+      "cheatsheet": "To ask 'What sports...?' use **Welchen Sport magst du?**. For 'What kind of sports...?' use **Was für Sport magst du?**. Express love for an activity by adding the adverb **gern**: **Ich spiele gern Fußball**."
+    }
+  ]
+}
