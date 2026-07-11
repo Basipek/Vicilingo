@@ -3,31 +3,193 @@
   "section": "A1_Starter",
   "nodes": [
     {
-      "id": "jp_hiragana_1",
-      "label": "Hiragana: Vowels",
-      "x": 200,
-      "y": 300,
-      "connections": ["jp_hiragana_2"],
-      "description": "Master the core vowels: あ, い, う, え, お.",
-      "cheatsheet": "A (ah), I (ee), U (oo), E (eh), O (oh)"
-    },
-    {
-      "id": "jp_hiragana_2",
-      "label": "Hiragana: K-G Rows",
+      "id": "jp_greetings_phrases",
+      "label": "Greetings & Set Phrases",
       "x": 350,
-      "y": 280,
-      "connections": ["jp_greetings"],
-      "description": "Introducing K-sounds and their voiced G-sound variants (Dakuten).",
-      "cheatsheet": "か(ka) -> が(ga). Adds tenten (\") marks."
-    },
-    {
-      "id": "jp_greetings",
-      "label": "Basic Greetings",
-      "x": 500,
       "y": 350,
       "connections": [],
-      "description": "Essential daily pleasantries.",
-      "cheatsheet": "Konnichiwa = Hello, Arigatou = Thanks."
+      "description": "Master essential daily greetings, self-identifying phrases, and home transitions.",
+      "cheatsheet": "Introduce yourself: **お名前は何ですか** (*O-namae wa nan desu ka* / What is your name?). Home phrases: **いってきます** (*Ittekimasu* / I'm leaving) matched with **いってらっしゃい** (*Itterasshai* / Take care/Go and come back). When returning: **ただいま** (*Tadaima* / I'm home) and **おかえりなさい** (*Okaerinasai* / Welcome back)."
+    },
+    {
+      "id": "jp_countries_identity",
+      "label": "Countries & Identity",
+      "x": 450,
+      "y": 380,
+      "connections": ["jp_greetings_phrases"],
+      "description": "Talk about nationalities, languages, and core family relationships.",
+      "cheatsheet": "State your country by adding **人** (*jin*) for nationality or **語** (*go*) for language (e.g., **フランス人** *Furansu-jin* / French person). Talk about close family simply: **お母さん** (*Okāsan* / Mom) or the humble **母** (*Haha* / My mother)."
+    },
+    {
+      "id": "jp_numbers_large",
+      "label": "Numbers, Hundreds & Thousands",
+      "x": 420,
+      "y": 480,
+      "connections": ["jp_greetings_phrases"],
+      "description": "Count higher figures into hundreds and thousands, and learn basic fractions.",
+      "cheatsheet": "Hundreds end in **〜百** (*hyaku*)—watch for irregulars: 300 (**さんびゃく**), 600 (**ろっぴゃく**), 800 (**はっぴゃく**). Thousands end in **〜千** (*sen*)—watch for 3000 (**さんぜん**) and 8000 (**はっせん**). Fractions use the structure **[Denominator] 分の [Numerator]**: e.g., 2/3 is **三分二** (*san-bun no ni*)."
+    },
+    {
+      "id": "jp_demonstratives_core",
+      "label": "Demonstratives (Ko-So-A-Do)",
+      "x": 320,
+      "y": 480,
+      "connections": ["jp_countries_identity"],
+      "description": "Identify objects using proximity-based pronouns and noun modifiers.",
+      "cheatsheet": "Independent items: **これ** (*kore* / this near me), **それ** (*sore* / that near you), **あれ** (*are* / that over there). To modify a specific noun directly, swap to **この**, **その**, **あの** (e.g., **この本** *kono hon* / this book)."
+    },
+    {
+      "id": "jp_colours_descript",
+      "label": "Colours & Descriptions",
+      "x": 220,
+      "y": 420,
+      "connections": ["jp_demonstratives_core"],
+      "description": "Use basic color vocabulary to describe everyday objects.",
+      "cheatsheet": "Primary colors can function directly as nouns or take **〜い** to become adjectives: **赤 / 赤い** (*aka / akai* / red), **青 / 青い** (*ao / aoi* / blue), **黒 / 黒い** (*kuro / kuroi* / black), **白 / 白い** (*shiro / shiroi* / white). Others like **緑** (*midori* / green) require **の** (*no*) to modify nouns."
+    },
+    {
+      "id": "jp_counters_general",
+      "label": "General Counters",
+      "x": 520,
+      "y": 550,
+      "connections": ["jp_numbers_large"],
+      "description": "Count general items using the native Japanese counting system.",
+      "cheatsheet": "Use the versatile **〜つ** (*tsu*) system for universal objects up to 10: **一つ** (*hitotsu*), **二つ** (*futatsu*), **三つ** (*mitsu*)... down to **十** (*tō* / ten). Ask 'How many?' using **いくつ** (*ikutsu*)."
+    },
+    {
+      "id": "jp_floors_negatives",
+      "label": "Floors & Negative Numbers",
+      "x": 620,
+      "y": 480,
+      "connections": ["jp_numbers_large"],
+      "description": "Navigate building levels, floors, basements, and negative figures.",
+      "cheatsheet": "Count floors using **〜階** (*kai/gai*): 1st floor is **一階** (*ikkai*), 3rd floor is **三階** (*sangai*). For basements or below-ground levels, prefix with **地下** (*chika*), such as **地下一階** (*chika ikkai* / B1). Negative values use **マイナス** (*mainasu*)."
+    },
+    {
+      "id": "jp_buildings_prepositions",
+      "label": "Buildings & Prepositions",
+      "x": 200,
+      "y": 550,
+      "connections": ["jp_demonstratives_core"],
+      "description": "Identify common spatial structures and describe basic physical layouts.",
+      "cheatsheet": "Common locations include **ビル** (*biru* / building) and **駅** (*eki* / station). Position items using structural prepositions like **上** (*ue* / up/on), **下** (*shita* / under), **前** (*mae* / in front), and **後ろ** (*ushiro* / behind) linked via **の**."
+    },
+    {
+      "id": "jp_existence_people",
+      "label": "Existence & Amount of People",
+      "x": 100,
+      "y": 450,
+      "connections": ["jp_buildings_prepositions", "jp_counters_general"],
+      "description": "Differentiate between animate and inanimate existence, and count groups of people.",
+      "cheatsheet": "Inanimate objects exist with **あります** (*arimasu*); living entities use **います** (*imasu*). To count people, use the **〜人** (*nin*) counter—note the critical irregulars: 1 person is **一人** (*hitori*), 2 people is **二人** (*futari*). Ask 'How many people?' using **何人** (*nan-nin*)."
+    },
+    {
+      "id": "jp_time_calendar_anchors",
+      "label": "Relative Time: Day, Week, Month, Year",
+      "x": 480,
+      "y": 250,
+      "connections": ["jp_greetings_phrases"],
+      "description": "Anchor timelines cleanly across relative days, weeks, months, and years.",
+      "cheatsheet": "Timeline grid:\nDays: **一昨日** (*ototoi*) → **昨日** (*kinō*) → **今日** (*kyō*) → **明日** (*ashita*) → **明後日** (*asatte*).\nWeeks: **先々週** (*sensenshū*) → **先週** (*senshū*) → **今週** (*konshū*) → **来週** (*raishū*) → **再来週** (*saraishū*).\nMonths: **先月** (*sengetsu*) / **今月** (*kongetsu*) / **来月** (*raigetsu*).\nYears: **去年** (*kyonen*) / **今年** (*kotoshi*) / **来年** (*rainen*)."
+    },
+    {
+      "id": "jp_time_specific",
+      "label": "Specific Time: This Morning & Next Week",
+      "x": 580,
+      "y": 180,
+      "connections": ["jp_time_calendar_anchors"],
+      "description": "Isolate immediate parts of a day or adjacent calendar blocks.",
+      "cheatsheet": "Isolate specific windows like **今朝** (*kesa* / this morning) or focus ahead to **来週** (*raishū* / next week). Remember that relative shifts (like *kesa* and *raishū*) do not require the surface marker **に** (*ni*)."
+    },
+    {
+      "id": "jp_months_days",
+      "label": "Months & Days of the Month",
+      "x": 600,
+      "y": 300,
+      "connections": ["jp_time_calendar_anchors"],
+      "description": "Identify calendar months and navigate highly irregular dates of the month.",
+      "cheatsheet": "Months add **〜月** (*gatsu*) to numbers (note April: **しがつ**, July: **しちがつ**, Sept: **くがつ**). Days 1-10 are heavily irregular: **ついたち** (1st), **ふつか** (2nd), **みっか** (3rd), **よっか** (4th), **いつか** (5th), **むいか** (6th), **なのか** (7th), **ようか** (8th), **ここのか** (9th), **とおか** (10th). 14th is **じゅうよっか**, 20th is **はつか**, 24th is **にじゅうよっか**."
+    },
+    {
+      "id": "jp_counters_time",
+      "label": "Year & Month Durations",
+      "x": 700,
+      "y": 250,
+      "connections": ["jp_months_days"],
+      "description": "Calculate spans and durations of time using years and month blocks.",
+      "cheatsheet": "To calculate year durations, append **〜年間** (*nenkan*) to a number. For month spans, use **〜ヶ月** (*kagetsu*), pronounced as a small 'ka' (e.g., **一ヶ月** / *ikkyagetsu* = one month). Ask 'How long/how many months?' using **何ヶ月** (*nan-kagetsu*)."
+    },
+    {
+      "id": "jp_interrogative_itsu",
+      "label": "Asking 'When' (Itsu)",
+      "x": 420,
+      "y": 120,
+      "connections": ["jp_time_calendar_anchors"],
+      "description": "Formulate open-ended temporal questions about future, present, or past events.",
+      "cheatsheet": "Use the absolute question word **いつ** (*itsu* / when) to ask about schedules. Unlike fixed clock hours, **いつ** does not take the particle **に**. Example: **いつ日本に行きますか** (*Itsu Nihon ni ikimasu ka* / When are you going to Japan?)."
+    },
+    {
+      "id": "jp_meals_vocab",
+      "label": "Meals & Food Types",
+      "x": 250,
+      "y": 250,
+      "connections": ["jp_greetings_phrases"],
+      "description": "Categorize daily meals and basic dish selections.",
+      "cheatsheet": "Categorize daylight food frames: **朝ご飯** (*asagohan* / breakfast), **昼ご飯** (*hirugohan* / lunch), and **晩ご飯** (*bangohan* / dinner). Identify common cultural staples like **寿司** (*sushi*)."
+    },
+    {
+      "id": "jp_verbs_consume",
+      "label": "Consumptive Actions (Eat & Drink)",
+      "x": 150,
+      "y": 200,
+      "connections": ["jp_meals_vocab"],
+      "description": "Utilize active consumption roots for eating and drinking.",
+      "cheatsheet": "Core verbs: **食べる** (*taberu* / to eat) becomes polite **食べます** (*tabemasu*). **飲む** (*nomu* / to drink) becomes polite **飲みます** (*nomimasu*). Pair these with direct objects using the direct object particle **を** (*o*) (e.g., **お茶を飲みます** / drink tea)."
+    },
+    {
+      "id": "jp_verb_sentences",
+      "label": "Verb Conjugation & Tenses",
+      "x": 80,
+      "y": 120,
+      "connections": ["jp_verbs_consume"],
+      "description": "Conjugate polite actions into affirmative, negative, past, and exploratory desire states.",
+      "cheatsheet": "Polite structural quadrant using **食べる**:\nAffirmative: **食べます** (*tabemasu* / I eat)\nNegative: **食べません** (*tabemasen* / I don't eat)\nPast: **食べました** (*tabemashita* / I ate)\nDesire: Drop *masu* + *tai* → **食べたいです** (*tabetaidesu* / I want to eat). Twist to a question: **食べたいですか** (*tabetaidesu ka* / Do you want to eat?)."
+    },
+    {
+      "id": "jp_conjunctions_sequence",
+      "label": "Conjunctions (Sorete & Sorekara)",
+      "x": 100,
+      "y": 300,
+      "connections": ["jp_verbs_consume"],
+      "description": "Link phrases together or order successive events smoothly.",
+      "cheatsheet": "Use conversational connectors: **それと** (*soreto* / and also, plus) to tack items onto a list. Use **それから** (*sorekara* / and then, after that) to chain distinct actions sequentially over time."
+    },
+    {
+      "id": "jp_frequency_adverbs",
+      "label": "Frequency of Verbs",
+      "x": -20,
+      "y": 200,
+      "connections": ["jp_verb_sentences"],
+      "description": "Quantify how often routines occur using positive and negative adverbs.",
+      "cheatsheet": "Scale your routines: **よく** (*yoku* / often), **ときどき** (*tokidoki* / sometimes), **あまり** (*amari* / not very often - *requires negative verb*), and **全然** (*zenzen* / never - *requires negative verb*). Example: **全然寿司を食べません** (*Zenzen sushi o tabemasen*)."
+    },
+    {
+      "id": "jp_transportation_modes",
+      "label": "Transportation & Commuting",
+      "x": 550,
+      "y": -20,
+      "connections": ["jp_interrogative_itsu", "jp_buildings_prepositions"],
+      "description": "Describe modes of travel and ask others how they commute to work or school.",
+      "cheatsheet": "Ask 'How do you go?' using **どうやって行きますか** (*dō yatte ikimasu ka*). Mark vehicles with particle **で** (*de*): **飛行機で** (*hikōki de* / by plane), **車で** (*kuruma de* / by car), **船で** (*fune de* / by boat). For walking, use the standalone adverbial phrase **歩いて** (*aruite* / by walking) without *de*."
+    },
+    {
+      "id": "jp_sports_preferences",
+      "label": "Sports & Complex Preferences",
+      "x": 260,
+      "y": 50,
+      "connections": ["jp_verb_sentences"],
+      "description": "Express likes and dislikes regarding sports, distinguishing between what and what kind.",
+      "cheatsheet": "To ask 'What sports do you like?', use **何（なに）のスポーツが好きですか** (*Nani no supōtsu ga suki desu ka*). To ask 'What kind of sports do you like?', use **どんなスポーツが好きですか** (*Donna supōtsu ga suki desu ka*). Target preferences using the **〜が好きです** (*ga suki desu*) pattern."
     }
   ]
 }

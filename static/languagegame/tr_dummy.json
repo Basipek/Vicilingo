@@ -1,0 +1,195 @@
+{
+  "language": "Turkish",
+  "section": "A1_Starter",
+  "nodes": [
+    {
+      "id": "tr_greetings_phrases",
+      "label": "Greetings & Set Phrases",
+      "x": 350,
+      "y": 350,
+      "connections": [],
+      "description": "Master essential daily greetings, self-identifying phrases, and home transitions.",
+      "cheatsheet": "Introduce yourself: **Adınız ne?** (*What is your name?*). Common daily greeting: **Merhaba** (*Hello*) or **Nasılsınız?** (*How are you?*). Home/departure phrases: When someone leaves, say **Hoşça kal** (*Stay pleasantly / Goodbye*) or **Güle güle** (*Go smilingly*). The person staying responds to those returning with **Hoş geldiniz** (*Welcome*), answered by **Hoş bulduk** (*We found it pleasant*)."
+    },
+    {
+      "id": "tr_countries_identity",
+      "label": "Countries & Identity",
+      "x": 450,
+      "y": 380,
+      "connections": ["tr_greetings_phrases"],
+      "description": "Talk about nationalities, languages, and core family relationships.",
+      "cheatsheet": "State your nationality using the suffixes **-lı / -li / -lu / -lü** attached to the country name (e.g., **Fransa** → **Fransalı** / *French person*), or use specific root words like **Türk** (*Turk*). Languages use **-ce / -ca / -çe / -ça** (e.g., **Türkçe** / *Turkish*). Basic family: **Anne** (*Mother*) and **Baba** (*Father*). Use the possessive for my: **Annem** (*My mother*)."
+    },
+    {
+      "id": "tr_numbers_large",
+      "label": "Numbers, Hundreds & Thousands",
+      "x": 420,
+      "y": 480,
+      "connections": ["tr_greetings_phrases"],
+      "description": "Count higher figures into hundreds and thousands, and learn basic fractions.",
+      "cheatsheet": "Hundreds are formed by placing a single digit before **yüz** (100): e.g., 300 is **üç yüz**, 600 is **altı yüz**. Thousands follow the same pattern with **bin** (1000): e.g., 3000 is **üç bin**. Unlike English, Turkish fractions place the denominator first using the locative case suffix **-da / -de / -ta / -te** followed by the numerator: e.g., 2/3 is **üçte iki** (literally 'in three, two')."
+    },
+    {
+      "id": "tr_demonstratives_core",
+      "label": "Demonstratives (Bu-Şu-O)",
+      "x": 320,
+      "y": 480,
+      "connections": ["tr_countries_identity"],
+      "description": "Identify objects using proximity-based pronouns and noun modifiers.",
+      "cheatsheet": "Turkish has a 3-tier proximity system: **Bu** (*this* - near me), **Şu** (*that* - slightly further or being pointed out), and **O** (*that over there* - far away or out of sight). These function both as standalone pronouns (**Bu ne?** / *What is this?*) and as direct noun modifiers without changing their form (**bu kitap** / *this book*)."
+    },
+    {
+      "id": "tr_colours_descript",
+      "label": "Colours & Descriptions",
+      "x": 220,
+      "y": 420,
+      "connections": ["tr_demonstratives_core"],
+      "description": "Use basic color vocabulary to describe everyday objects.",
+      "cheatsheet": "Primary colors act directly as adjectives before nouns: **kırmızı** (*red*), **mavi** (*blue*), **siyah** (*black*), and **beyaz** (*white*). For example: **kırmızı elma** (*red apple*). Other common colors include **yeşil** (*green*) and **sarı** (*yellow*). Colors do not shift forms when modifying nouns."
+    },
+    {
+      "id": "tr_counters_general",
+      "label": "General Counters & Quantity",
+      "x": 520,
+      "y": 550,
+      "connections": ["tr_numbers_large"],
+      "description": "Count items and quantities cleanly using universal numerical structures.",
+      "cheatsheet": "In Turkish, nouns following a number *never* take the plural suffix: use **üç kitap** (*three books*), NOT **üç kitaplar**. To insert a general counter item like 'pieces' or 'units', use **tane** or **adet**: e.g., **beş tane elma** (*five pieces of apples*). Ask 'How many?' using **Kaç?** or **Kaç tane?**."
+    },
+    {
+      "id": "tr_floors_negatives",
+      "label": "Floors & Negative Numbers",
+      "x": 620,
+      "y": 480,
+      "connections": ["tr_numbers_large"],
+      "description": "Navigate building levels, floors, basements, and negative figures.",
+      "cheatsheet": "Count floors using **kat** (*floor*). First floor is **birinci kat**, third floor is **üçüncü kat**. The ground floor is uniquely called **giriş katı** or **zemin kat**. Basements are referred to using **bodrum** (e.g., **bodrum kat**). Negative numerical values or temperatures sub zero utilize the prefix **eksi** (*minus*), such as **eksi beş** (*minus five*)."
+    },
+    {
+      "id": "tr_buildings_prepositions",
+      "label": "Buildings & Spatial Relations",
+      "x": 200,
+      "y": 550,
+      "connections": ["tr_demonstratives_core"],
+      "description": "Identify common spatial structures and describe basic physical layouts.",
+      "cheatsheet": "Common locations: **bina** (*building*) and **istasyon** (*station*). Position objects using relational nouns with possessive chains: **üstünde** (*on/above*), **altında** (*under*), **önünde** (*in front of*), and **arkasında** (*behind*). Example: **masanın üstünde** (*on top of the table*)."
+    },
+    {
+      "id": "tr_existence_people",
+      "label": "Existence & Amount of People",
+      "x": 100,
+      "y": 450,
+      "connections": ["tr_buildings_prepositions", "tr_counters_general"],
+      "description": "Express presence, absence, and existence of objects or groups of people.",
+      "cheatsheet": "Turkish uses **var** for 'there is/are' and **yok** for 'there is not/are not' for both living and non-living entities. Example: **Odada iki kişi var** (*There are two people in the room*). To count people, simply use the word **kişi** (*person*) after a number: **bir kişi** (*one person*), **iki kişi** (*two people*). Ask 'How many people?' using **Kaç kişi?**."
+    },
+    {
+      "id": "tr_time_calendar_anchors",
+      "label": "Relative Time: Day, Week, Month, Year",
+      "x": 480,
+      "y": 250,
+      "connections": ["tr_greetings_phrases"],
+      "description": "Anchor timelines cleanly across relative days, weeks, months, and years.",
+      "cheatsheet": "Timeline grid:\nDays: **evvelsi gün** (*day before yesterday*) → **dün** (*yesterday*) → **bugün** (*today*) → **yarın** (*tomorrow*) → **öbür gün** (*day after tomorrow*).\nWeeks: **geçen hafta** (*last week*) → **bu hafta** (*this week*) → **gelecek hafta** (*next week*).\nMonths: **geçen ay** (*last month*) / **bu ay** (*this month*) / **gelecek ay** (*next month*).\nYears: **geçen yıl / geçen sene** (*last year*) / **bu yıl** (*this year*) / **gelecek yıl** (*next year*)."
+    },
+    {
+      "id": "tr_time_specific",
+      "label": "Specific Time: This Morning & Next Week",
+      "x": 580,
+      "y": 180,
+      "connections": ["tr_time_calendar_anchors"],
+      "description": "Isolate immediate parts of a day or adjacent calendar blocks.",
+      "cheatsheet": "Isolate specific windows of time like **bu sabah** (*this morning*) or focus forward to **gelecek hafta** (*next week*). When used as relative temporal adverbs answering 'when', phrases like **bu sabah** or **yarın** do not require an additional locative case suffix (**-da/-de**)."
+    },
+    {
+      "id": "tr_months_days",
+      "label": "Months & Days of the Month",
+      "x": 600,
+      "y": 300,
+      "connections": ["tr_time_calendar_anchors"],
+      "description": "Identify calendar months and navigate numeric dates of the month.",
+      "cheatsheet": "Months have distinct names: **Ocak** (*Jan*), **Şubat** (*Feb*), **Mart** (*Mar*), **Nisan** (*Apr*)... Days of the month are simple cardinal numbers followed by the month name: e.g., 'May 4th' is **4 Mayıs** (*dört mayıs*). The first of the month can be called **biri** or **birinci**."
+    },
+    {
+      "id": "tr_counters_time",
+      "label": "Year & Month Durations",
+      "x": 700,
+      "y": 250,
+      "connections": ["tr_months_days"],
+      "description": "Calculate spans and durations of time using years and month blocks.",
+      "cheatsheet": "To express spans of time, state the number followed by the time block unit: **yıl / sene** (*year*) or **ay** (*month*). You can add **boyunca** (*during/for*) for emphasis, but it is often implied: **üç ay** (*three months / for three months*). Ask 'How many months?' using **Kaç ay?**."
+    },
+    {
+      "id": "tr_interrogative_ne_zaman",
+      "label": "Asking 'When' (Ne Zaman)",
+      "x": 420,
+      "y": 120,
+      "connections": ["tr_time_calendar_anchors"],
+      "description": "Formulate open-ended temporal questions about future, present, or past events.",
+      "cheatsheet": "Use the absolute question word combo **Ne zaman?** (*When?*) to query schedules. Like relative time words, it stands cleanly in the sentence without needing case markers. Example: **Ne zaman Türkiye'ye gidiyorsun?** (*When are you going to Turkey?*)."
+    },
+    {
+      "id": "tr_meals_vocab",
+      "label": "Meals & Food Types",
+      "x": 250,
+      "y": 250,
+      "connections": ["tr_greetings_phrases"],
+      "description": "Categorize daily meals and basic dish selections.",
+      "cheatsheet": "Categorize daylight food frames: **kahvaltı** (*breakfast*), **öğle yemeği** (*lunch*), and **akşam yemeği** (*dinner*). Identify common core cultural staples like **ekmek** (*bread*) and **kebap** (*kebab*)."
+    },
+    {
+      "id": "tr_verbs_consume",
+      "label": "Consumptive Actions (Eat & Drink)",
+      "x": 150,
+      "y": 200,
+      "connections": ["tr_meals_vocab"],
+      "description": "Utilize active consumption roots for eating and drinking.",
+      "cheatsheet": "Core verb roots: **yemek** (*to eat*) and **içmek** (*to drink*). In the present continuous polite form, they become **yiyorum** (*I am eating*) and **içiyorum** (*I am drinking*). Pair them with indefinite objects directly: **Çay içiyorum** (*I am drinking tea*)."
+    },
+    {
+      "id": "tr_verb_sentences",
+      "label": "Verb Conjugation & Tenses",
+      "x": 80,
+      "y": 120,
+      "connections": ["tr_verbs_consume"],
+      "description": "Conjugate actions into affirmative, negative, past, and exploratory desire states.",
+      "cheatsheet": "Polite present continuous/intent quadrant using **yemek** (to eat) for 'I':\nAffirmative: **Yiyorum** (*I eat / I am eating*)\nNegative: **Yemiyorum** (*I don't eat / I am not eating*)\nPast: **Yedim** (*I ate*)\nDesire: Use the auxiliary construction **yemek istiyorum** (*I want to eat*). Twist to a question: **Yemek istiyor musun?** (*Do you want to eat?*)."
+    },
+    {
+      "id": "tr_conjunctions_sequence",
+      "label": "Conjunctions (Ve & Sonra)",
+      "x": 100,
+      "y": 300,
+      "connections": ["tr_verbs_consume"],
+      "description": "Link phrases together or order successive events smoothly.",
+      "cheatsheet": "Use conversational connectors: **ve** (*and*) or **ve ayrıca** (*and also*) to tack items onto a list. Use **sonra** or **ondan sonra** (*and then / after that*) to chain distinct actions sequentially over time."
+    },
+    {
+      "id": "tr_frequency_adverbs",
+      "label": "Frequency of Verbs",
+      "x": -20,
+      "y": 200,
+      "connections": ["tr_verb_sentences"],
+      "description": "Quantify how often routines occur using positive and negative adverbs.",
+      "cheatsheet": "Scale your routines: **sık sık** (*often*), **bazen** (*sometimes*), **pek değil** (*not very often*), and **hiç** (*never*). Note: **hiç** absolute triggers a negative verb form. Example: **Hiç kebap yemiyorum** (*I never eat kebab*)."
+    },
+    {
+      "id": "tr_transportation_modes",
+      "label": "Transportation & Commuting",
+      "x": 550,
+      "y": -20,
+      "connections": ["tr_interrogative_ne_zaman", "tr_buildings_prepositions"],
+      "description": "Describe modes of travel and ask others how they commute to work or school.",
+      "cheatsheet": "Ask 'How do you go?' using **Nasıl gidiyorsun?**. Mark vehicles with the instrumental suffix or standalone word **ile / -la / -le**: **uçakla** (*by plane*), **arabayla** (*by car*), **gemiyle** (*by boat*). For walking, use the adverbial phrase **yürüyerek** (*by walking/on foot*)."
+    },
+    {
+      "id": "tr_sports_preferences",
+      "label": "Sports & Complex Preferences",
+      "x": 260,
+      "y": 50,
+      "connections": ["tr_verb_sentences"],
+      "description": "Express likes and dislikes regarding sports, distinguishing between 'what' and 'what kind'.",
+      "cheatsheet": "To ask 'What sports do you like?', use **Hangi sporları seviyorsun?** (*Which sports do you love/like?*). To ask 'What kind of sports do you like?', use **Nasıl sporları seviyorsun?** or **Ne tür sporlardan hoşlanırsın?**. Target your preferences using the verb **seviyorum** (*I love/like*) or **hoşlanıyorum** (*I enjoy*)."
+    }
+  ]
+}

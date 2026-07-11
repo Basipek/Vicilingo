@@ -1,0 +1,195 @@
+{
+  "language": "Italian",
+  "section": "A1_Starter",
+  "nodes": [
+    {
+      "id": "it_greetings_phrases",
+      "label": "Greetings & Set Phrases",
+      "x": 350,
+      "y": 350,
+      "connections": [],
+      "description": "Master essential daily greetings, name expressions, and leaving/returning dynamics.",
+      "cheatsheet": "Ask names: **Come ti chiami?**. Leaving phrases: **Io vado** (*I'm leaving*) or **Arrivederci**. Home phrasing when coming back: **Sono tornato** (*I'm home*) and **Bentornato** (*Welcome back*)."
+    },
+    {
+      "id": "it_countries_identity",
+      "label": "Countries & Identity",
+      "x": 450,
+      "y": 380,
+      "connections": ["it_greetings_phrases"],
+      "description": "Talk about nationalities, languages, and core family relationships.",
+      "cheatsheet": "Nationalities match gender: **Sono italiano** (m) / **italiana** (f). Languages use the country adjective: **Parlo italiano**. For 'Mom', use the affectionate **mamma** or formal **madre**."
+    },
+    {
+      "id": "it_numbers_large",
+      "label": "Numbers, Hundreds & Thousands",
+      "x": 420,
+      "y": 480,
+      "connections": ["it_greetings_phrases"],
+      "description": "Count higher figures into hundreds and thousands, and learn basic fractions.",
+      "cheatsheet": "Hundreds use **cento** (100), **duecento** (200). Thousands: **mille** (1000), **duemila** (2000 - *changes suffix to mila*). Fractions combine cardinal and ordinal components: 2/3 is **due terzi**."
+    },
+    {
+      "id": "it_demonstratives_core",
+      "label": "Demonstratives (Questo, Quello, Quale)",
+      "x": 320,
+      "y": 480,
+      "connections": ["it_countries_identity"],
+      "description": "Identify objects using proximity-coded demonstrative adjectives.",
+      "cheatsheet": "Demonstratives change by gender and vowel initials: **questo/questa** (this). 'That' changes like definite articles: **quello/quella/quel**. 'Which' is **quale**."
+    },
+    {
+      "id": "it_colours_descript",
+      "label": "Colours & Descriptions",
+      "x": 220,
+      "y": 420,
+      "connections": ["it_demonstratives_core"],
+      "description": "Use basic color vocabulary to modify nouns.",
+      "cheatsheet": "Colors must agree with gender/number: **rosso/rossa** (red), **nero** (black), **bianco** (white). Colors ending in '-e' like **verde** (green) or **azzurro** change only for plural (**verdi**)."
+    },
+    {
+      "id": "it_counters_general",
+      "label": "General Counters",
+      "x": 520,
+      "y": 550,
+      "connections": ["it_numbers_large"],
+      "description": "Count distinct objects using gendered plural adaptations.",
+      "cheatsheet": "Italian uses direct numerical plurals rather than counter words: **un libro**, **due libri**. Ask 'How many?' using **Quanti?** (m) or **Quante?** (f)."
+    },
+    {
+      "id": "it_floors_negatives",
+      "label": "Floors & Negative Numbers",
+      "x": 620,
+      "y": 480,
+      "connections": ["it_numbers_large"],
+      "description": "Navigate building levels, floors, basements, and negative figures.",
+      "cheatsheet": "Floors use ordinals: **primo piano** (1st floor). Ground floor is **piano terra**. Basement is **seminterrato** or **seminterrato meno uno** (B1). Negative values use **meno** (*meno cinque*)."
+    },
+    {
+      "id": "it_buildings_prepositions",
+      "label": "Buildings & Prepositions",
+      "x": 200,
+      "y": 550,
+      "connections": ["it_demonstratives_core"],
+      "description": "Identify common spatial structures and describe basic physical layouts.",
+      "cheatsheet": "Structures: **l'edificio** (building), **la stazione** (station). Positional expressions: **sopra** (on/above), **sotto** (under), **davanti a** (in front of), **dietro** (behind)."
+    },
+    {
+      "id": "it_existence_people",
+      "label": "Existence & Amount of People",
+      "x": 100,
+      "y": 450,
+      "connections": ["it_buildings_prepositions", "it_counters_general"],
+      "description": "Use existential locatives and count human aggregates.",
+      "cheatsheet": "Use the existential locative verbs **c'è** (there is) and **ci sono** (there are). Count people utilizing the noun **persone**: **due persone** (two people)."
+    },
+    {
+      "id": "it_time_calendar_anchors",
+      "label": "Relative Time: Day, Week, Month, Year",
+      "x": 480,
+      "y": 250,
+      "connections": ["it_greetings_phrases"],
+      "description": "Anchor timelines cleanly across relative days, weeks, months, and years.",
+      "cheatsheet": "Timeline grid:\nDays: **l'altro ieri** → **ieri** → **oggi** → **domani** → **dopodomani**.\nWeeks: **la settimana scorsa** → **questa settimana** → **la settimana prossima**.\nMonths: **il mese scorso** → **questo mese** → **il mese prossimo**.\nYears: **l'anno scorso** → **quest'anno** → **l'anno prossimo**."
+    },
+    {
+      "id": "it_time_specific",
+      "label": "Specific Time: This Morning & Next Week",
+      "x": 580,
+      "y": 180,
+      "connections": ["it_time_calendar_anchors"],
+      "description": "Isolate immediate parts of a day or adjacent calendar blocks.",
+      "cheatsheet": "Isolate sections: **stamattina** (*this morning*). Next calendar blocks: **la settimana prossima** (*next week*)."
+    },
+    {
+      "id": "it_months_days",
+      "label": "Months & Days of the Month",
+      "x": 600,
+      "y": 300,
+      "connections": ["it_time_calendar_anchors"],
+      "description": "Identify calendar months and navigate normal cardinal calendar dates.",
+      "cheatsheet": "Months: **gennaio**, **febbraio**, etc. Dates use regular cardinal numbers preceded by definite articles: 'May 4th' is **il quattro maggio**. Exception for the 1st of the month: **il primo maggio**."
+    },
+    {
+      "id": "it_counters_time",
+      "label": "Year & Month Durations",
+      "x": 700,
+      "y": 250,
+      "connections": ["it_months_days"],
+      "description": "Calculate spans and durations of time using years and month blocks.",
+      "cheatsheet": "Calculate spans using **mese/mesi** (month/s) or **anno/anni** (year/s) with the preposition **per**: e.g., *per due mesi* (for two months)."
+    },
+    {
+      "id": "it_interrogative_itsu",
+      "label": "Asking 'When' (Quando)",
+      "x": 420,
+      "y": 120,
+      "connections": ["it_time_calendar_anchors"],
+      "description": "Formulate open-ended temporal questions about future, present, or past events.",
+      "cheatsheet": "Use the question root **Quando?** (*When?*). Example: **Quando vai in Italia?** (*When are you going to Italy?*)."
+    },
+    {
+      "id": "it_meals_vocab",
+      "label": "Meals & Food Types",
+      "x": 250,
+      "y": 250,
+      "connections": ["it_greetings_phrases"],
+      "description": "Categorize daily meals and basic dish selections.",
+      "cheatsheet": "Meals: **la colazione** (breakfast), **il pranzo** (lunch), **la cena** (dinner). Target dish item: **il sushi**."
+    },
+    {
+      "id": "it_verbs_consume",
+      "label": "Consumptive Actions (Eat & Drink)",
+      "x": 150,
+      "y": 200,
+      "connections": ["it_meals_vocab"],
+      "description": "Utilize active consumption roots for eating and drinking.",
+      "cheatsheet": "Verbs: **mangiare** (to eat) and **bere** (to drink - irregular: *io bevo*). Pair with objects directly: **Mangio il sushi**."
+    },
+    {
+      "id": "it_verb_sentences",
+      "label": "Verb Conjugation & Tenses",
+      "x": 80,
+      "y": 120,
+      "connections": ["it_verbs_consume"],
+      "description": "Conjugate polite actions into affirmative, negative, past, and exploratory desire states.",
+      "cheatsheet": "Structural expressions using **mangiare**:\nAffirmative: **Mangio** (*I eat*)\nNegative: **Non mangio il sushi** (*I don't eat sushi*)\nPast: Past uses *avere* + participle: **Ho mangiato il sushi** (*I ate sushi*)\nDesire: Use modal **volere** → **Voglio mangiare il sushi** (*I want to eat sushi*). Question form: **Vuoi mangiare il sushi?**."
+    },
+    {
+      "id": "it_conjunctions_sequence",
+      "label": "Conjunctions (E anche & Poi)",
+      "x": 100,
+      "y": 300,
+      "connections": ["it_verbs_consume"],
+      "description": "Link phrases together or order successive events smoothly.",
+      "cheatsheet": "Use **E anche / Inoltre** (*And also / Plus*) to add options. Use **Poi / Dopo** (*And then / After that*) to build chronological sequences."
+    },
+    {
+      "id": "it_frequency_adverbs",
+      "label": "Frequency of Verbs",
+      "x": -20,
+      "y": 200,
+      "connections": ["it_verb_sentences"],
+      "description": "Quantify how often routines occur using positive and negative adverbs.",
+      "cheatsheet": "Scale routines: **spesso** (often), **a volte** (sometimes), **raramente** (rarely), and **non... mai** (never - *requires non before verb*): **Non mangio mai il sushi**."
+    },
+    {
+      "id": "it_transportation_modes",
+      "label": "Transportation & Commuting",
+      "x": 550,
+      "y": -20,
+      "connections": ["it_interrogative_itsu", "it_buildings_prepositions"],
+      "description": "Describe modes of travel and ask others how they commute to work.",
+      "cheatsheet": "Ask 'How do you go?' via **Come vai al lavoro?**. Vehicles take the preposition **in**: **in aereo** (by plane), **in macchina** (by car), **in nave** (by boat). Walking uses the idiom: **a piedi**."
+    },
+    {
+      "id": "it_sports_preferences",
+      "label": "Sports & Complex Preferences",
+      "x": 260,
+      "y": 50,
+      "connections": ["it_verb_sentences"],
+      "description": "Express preferences regarding sports, distinguishing what vs what kind.",
+      "cheatsheet": "To ask 'What sports...?' use **Quale sport ti piace?**. For 'What kind of sports...?' use **Che genere di sport ti piace?**. Target your choices with the verb **piacere** (e.g., *Mi piace il calcio*)."
+    }
+  ]
+}
