@@ -7,6 +7,9 @@ Vicilingo replaces scattered notebooks, vocabulary apps, and disjointed text fil
 See it in action!
 https://antixbasipek.taile1bff7.ts.net/language
 
+Check out my To-Do list!
+https://antixbasipek.taile1bff7.ts.net/synodos?path=%2FLobby&node_id=45
+
 [Heavily WIP and early in development. AI Assisted.]
 ---
 
