@@ -11,6 +11,19 @@
         #ui-overlay { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 8px; max-width: 300px; pointer-events: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         button { background: #444; color: #fff; border: 1px solid #666; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-top: 5px;}
         button:hover { background: #666; }
+        
+		footer {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            background: rgba(18, 18, 18, 0.95);
+            border-top: 1px solid #333;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.8rem;
+            color: #888;
+            z-index: 100;
+        }
+        footer a { color: #00ffff; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -23,6 +36,17 @@
         <div id="node-details">Click a node to inspect...</div>
         <button onclick="testLLMCall()">Test Gym LLM Call</button>
     </div>
+    
+    	<footer>
+        <p style="margin: 0;">&copy; 2026 Virtual Handset Project by <a href="/">Basipek</a></p>
+        <nav style="margin-top: 5px;">
+            Powered by <a href="https://jssip.com" target="_blank">JsSIP</a> | 
+            <a href="https://antisip.com" target="_blank">AntiSIP</a>
+        </nav>
+        <p style="margin: 5px 0 0 0;"><button class="btn-small" onclick="document.getElementById('kvkk-modal').style.display='flex'">View Privacy Policy</button></p>
+		<a href="https://achecker.ca/">
+</a>
+    </footer>
 </div>
 
 <script>
@@ -40,10 +64,10 @@ let nodes = [];
 
 // Load World map placeholder image
 const bgImage = new Image();
-bgImage.src = '[https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_blank_black_white.svg](https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_blank_black_white.svg)';
+bgImage.src = 'https://static.vecteezy.com/system/resources/thumbnails/035/393/988/small_2x/world-map-modern-globe-map-generalized-world-map-world-map-on-isolated-background-illustration-vector.jpg';
 
 // Fetch Mock Japanese Nodes
-fetch('/api/nodes/jp_dummy')
+fetch('/language/api/nodes/jp_dummy')
     .then(res => res.json())
     .then(data => {
         nodes = data.nodes;
@@ -145,7 +169,7 @@ function testLLMCall() {
     const details = document.getElementById('node-details');
     details.innerHTML = "Fetching custom exercise from OpenRouter...";
     
-    fetch('/api/generate-exercise', {
+    fetch('/language/api/generate-exercise', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({topics: ['Hiragana Vowels'], difficulty: 'A1'})
