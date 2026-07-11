@@ -178,6 +178,7 @@ def generate_exercise():
         
         print(ai_res)
         print("\n////OPENROUTER RESPONSE////")
+        print(f"////RESPONSE FOR {nickname}////O0+--")
         
         if 'choices' not in ai_res:
             return jsonify({"error": "OpenRouter API error", "details": ai_res}), 500
