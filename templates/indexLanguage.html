@@ -85,10 +85,17 @@
 <div id="canvas-container">
     <canvas id="mapCanvas"></canvas>
     
-    <div id="ui-overlay">
-        <h2>⚔️ Vicilingo Map</h2>
+<div id="ui-overlay">
+    <div class="auth-only">
         <div id="node-details">Click a node to inspect...</div>
     </div>
+
+    <div class="unauth-only">
+        <h2>🔒 Access Restricted</h2>
+        <p>Please log in to begin your study session.</p>
+        <button class="sicrit-btn" onclick="window.SicritAuth.showLogin()">Authenticate Now</button>
+    </div>
+</div>
 
     <div id="shopping-bag-container">
         <h2 style="color: #ff9f43; margin-top: 0;">🛒 Study Shopping Bag</h2>
@@ -99,7 +106,7 @@
     </div>
     
     	<footer>
-        <p style="margin: 0;">&copy; 2026 Virtual Handset Project by <a href="/">Basipek</a></p>
+        <p style="margin: 0;">&copy; 2026 Vicilingo Project by <a href="/">Basipek</a></p>
         <!-- nav style="margin-top: 5px;">
             Powered by <a href="https://jssip.com" target="_blank">JsSIP</a> | 
             <a href="https://antisip.com" target="_blank">AntiSIP</a>
@@ -111,6 +118,7 @@
 </div>
 
 <script>
+isauth=false;
 const canvas = document.getElementById('mapCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -314,6 +322,14 @@ window.addEventListener('resize', () => {
 });
 bgImage.onload = () => draw();
 
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
 // Global Session Engine State Variables
 let activeSessionQueue = [];
 let sessionTotalAttempts = 0;
@@ -333,7 +349,13 @@ function testLLMCall(shoppingBagItems) {
         return;
     }
 
+	const authPayload = {
+		nickname: localStorage.getItem('sicrit_nickname'),
+		session_key: localStorage.getItem('sicrit_session_key')
+	};
+	
     const payload = {
+		...authPayload,
         ingredients: shoppingBagItems.map(item => ({
             topic: item[0],
             description: item[1],
@@ -354,7 +376,7 @@ function testLLMCall(shoppingBagItems) {
         if(!data.exercises || data.exercises.length === 0) throw new Error("No exercises returned from matrix.");
         
         // Initialize/Reset State tracking variables for the current session run
-        activeSessionQueue = data.exercises;
+        activeSessionQueue = shuffleArray(data.exercises);
         sessionTotalAttempts = 0;
         sessionCorrectAnswers = 0;
         sessionTotalMistakes = 0;
@@ -382,6 +404,8 @@ function renderCurrentQuestion() {
 
     const current = activeSessionQueue[0];
     
+    const shuffledOptions = shuffleArray([...current.options]);
+    
     // Safely escape single quotes for click macros
     const escapedAnswer = current.answer.replace(/'/g, "\\'");
     const escapedTopic = current.topic.replace(/'/g, "\\'");
@@ -393,7 +417,7 @@ function renderCurrentQuestion() {
         </div>
         <p style="font-size: 1.1em; margin-bottom: 15px;">${current.question}</p>
         <div style="display: flex; flex-direction: column; gap: 8px;">
-            ${current.options.map(opt => {
+            ${shuffledOptions.map(opt => {
                 const escapedOpt = opt.replace(/'/g, "\\'");
                 return `<button onclick="evaluateSessionAnswer(event, '${escapedOpt}', '${escapedAnswer}', '${escapedTopic}')">${opt}</button>`;
             }).join('')}
@@ -707,4 +731,5 @@ function resetPullButton() {
 }
 </script>
 </body>
+<script src="/static/sicrit-auth-kit.js"></script>
 </html>

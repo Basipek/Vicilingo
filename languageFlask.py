@@ -7,6 +7,16 @@ eventlet.monkey_patch()
 
 from dotenv import load_dotenv
 
+import sys
+from pathlib import Path
+
+# Expand the home directory (~) and add the specific directory to sys.path
+sicrit_path = Path.home() / "scripts_py" / "webinterfacesip"
+sys.path.append(str(sicrit_path))
+
+# Now you can safely import the functions
+from sicrit import session_is_auth2, session_is_auth
+
 # Load the keys out of your hidden .env file
 load_dotenv()
 
@@ -81,8 +91,18 @@ def get_nodes(filename):
 
 @language_bp.route('/api/generate-exercise', methods=['POST'])
 def generate_exercise():
-    user_data = request.json
-    ingredients = user_data.get('ingredients', [])
+    data = request.get_json() or {}
+    
+    # Extract credentials
+    nickname = data.get('nickname') or 'Anonymous'
+    session_key = data.get('session_key')
+    
+    # Enforce Auth Lock
+    if not session_is_auth(nickname, session_key):
+        return jsonify({"status": "error", "message": "Not logged in."}), 403
+
+    # Existing logic continues below...
+    ingredients = data.get('ingredients', [])
 
     if not ingredients:
         return jsonify({"error": "No exercise components supplied to gym recipe matrix"}), 400
@@ -120,10 +140,10 @@ def generate_exercise():
     {{
       "exercises": [
         {{
-          "topic": "Topic Name",
+          "topic": "[LANGUAGE SHORTHAND and difficulty] Topic Name",
           "question": "Example question text with Furigana (読み方) for Kanji?",
           "options": ["A", "B", "C", "D"],
-          "answer": "A"
+          "answer": "EXACT STRING MATCHING THE ANSWER"
         }}
       ]
     }}
@@ -146,6 +166,7 @@ def generate_exercise():
     
     print(prompt)
     print("\n////PROMPT SENT TO OPENROUTER////")
+    print(f"\n////PROMPT SENT BY {nickname}////O0+--")
 
     try:
         response = requests.post(
