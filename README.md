@@ -10,6 +10,8 @@ https://antixbasipek.taile1bff7.ts.net/language
 Check out my To-Do list!
 https://antixbasipek.taile1bff7.ts.net/synodos?path=%2FLobby&node_id=45
 
+![Main Dashboard Screen](https://media.licdn.com/dms/image/v2/D4D22AQHABygBP1Mx-w/feedshare-shrink_800/B4DZ9TOSdHJcAc-/0/1783807682779?e=1785369600&v=beta&t=Hwa-9CQeE3XCpvQ3JhQGLoiq-VIEOzLNXDb5DuhH3oo)
+
 [Heavily WIP and early in development. AI Assisted.]
 ---
 
