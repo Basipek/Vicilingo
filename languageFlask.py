@@ -10,6 +10,113 @@ from dotenv import load_dotenv
 import sys
 from pathlib import Path
 
+import sqlite3
+
+# Dynamically resolve DB path relative to the blueprint directory to avoid folder collisions
+DB_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "vicilingo_users.db")
+
+def init_db():
+    """Initializes the Vicilingo user XP tracking tables."""
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS user_xp (
+            nickname TEXT NOT NULL,
+            topic TEXT NOT NULL,
+            xp INTEGER DEFAULT 0,
+            PRIMARY KEY (nickname, topic)
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+# Auto-initialize on module load
+init_db()
+
+@language_bp.route('/api/user/get-xp', methods=['POST'])
+def get_xp():
+    """Retrieves the complete XP progress table for an authenticated user."""
+    data = request.get_json() or {}
+    nickname = data.get('nickname') or 'Anonymous'
+    session_key = data.get('session_key')
+    
+    if not session_is_auth(nickname, session_key):
+        return jsonify({"status": "error", "message": "Not logged in."}), 403
+        
+    try:
+        conn = sqlite3.connect(DB_FILE)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("SELECT topic, xp FROM user_xp WHERE nickname = ?", (nickname,))
+        rows = cursor.fetchall()
+        conn.close()
+        
+        topics_list = [{"topic": row["topic"], "xp": row["xp"]} for row in rows]
+        return jsonify({"status": "success", "topics": topics_list})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@language_bp.route('/api/user/update-xp', methods=['POST'])
+def update_xp():
+    """Updates/Increments the user's progress for a specific node topic."""
+    data = request.get_json() or {}
+    nickname = data.get('nickname') or 'Anonymous'
+    session_key = data.get('session_key')
+    topic = data.get('topic')
+    change = data.get('change', 0)
+    
+    if not session_is_auth(nickname, session_key):
+        return jsonify({"status": "error", "message": "Not logged in."}), 403
+        
+    if not topic:
+        return jsonify({"status": "error", "message": "No topic supplied."}), 400
+        
+    try:
+        conn = sqlite3.connect(DB_FILE)
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT xp FROM user_xp WHERE nickname = ? AND topic = ?", (nickname, topic))
+        row = cursor.fetchone()
+        
+        if row is None:
+            new_xp = max(0, min(100, change))
+            cursor.execute("INSERT INTO user_xp (nickname, topic, xp) VALUES (?, ?, ?)", (nickname, topic, new_xp))
+        else:
+            new_xp = max(0, min(100, row[0] + change))
+            cursor.execute("UPDATE user_xp SET xp = ? WHERE nickname = ? AND topic = ?", (new_xp, nickname, topic))
+            
+        conn.commit()
+        conn.close()
+        
+        return jsonify({"status": "success", "topic": topic, "xp": new_xp})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@language_bp.route('/api/user/forget-topic', methods=['POST'])
+def forget_topic():
+    """Resets or deletes tracking progress of a given topic node."""
+    data = request.get_json() or {}
+    nickname = data.get('nickname') or 'Anonymous'
+    session_key = data.get('session_key')
+    topic = data.get('topic')
+    
+    if not session_is_auth(nickname, session_key):
+        return jsonify({"status": "error", "message": "Not logged in."}), 403
+        
+    if not topic:
+        return jsonify({"status": "error", "message": "No topic supplied."}), 400
+        
+    try:
+        conn = sqlite3.connect(DB_FILE)
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM user_xp WHERE nickname = ? AND topic = ?", (nickname, topic))
+        conn.commit()
+        conn.close()
+        
+        return jsonify({"status": "success", "message": f"Forgot topic: {topic}"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 # Expand the home directory (~) and add the specific directory to sys.path
 sicrit_path = Path.home() / "scripts_py" / "webinterfacesip"
 sys.path.append(str(sicrit_path))

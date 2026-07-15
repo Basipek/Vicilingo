@@ -87,7 +87,23 @@
     
 <div id="ui-overlay">
     <div class="auth-only">
+        <!-- Dashboard Navigation Tabs -->
+        <div style="display: flex; gap: 5px; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 8px;">
+            <button id="tab-nodes" onclick="switchTab('nodes')" style="margin:0; background: #5f27cd; flex: 1;">🗺️ Inspector</button>
+            <button id="tab-profile" onclick="switchTab('profile')" style="margin:0; background: #333; flex: 1;">👤 Progress</button>
+        </div>
+
+        <!-- Node Inspector Frame -->
         <div id="node-details">Click a node to inspect...</div>
+        
+        <!-- Interactive Progress Profile View -->
+        <div id="profile-details" style="display: none;">
+            <h3 style="color:#ff9f43; margin-top: 0;">👤 Study Profile</h3>
+            <div id="total-xp-counter" style="font-size: 1.15em; font-weight: bold; margin-bottom: 12px; color: #2ecc71;">Total XP: 0</div>
+            <div id="xp-topics-list" style="max-height: 280px; overflow-y: auto; padding-right: 5px;">
+                <!-- Filled dynamically by JavaScript -->
+            </div>
+        </div>
     </div>
 
     <div class="unauth-only">
@@ -135,22 +151,28 @@ let nodes = [];
 const bgImage = new Image();
 bgImage.src = 'https://static.vecteezy.com/system/resources/thumbnails/035/393/988/small_2x/world-map-modern-globe-map-generalized-world-map-world-map-on-isolated-background-illustration-vector.jpg';
 
-// Fetch All Node Clusters across the filesystem
-fetch('/language/api/nodes/all')
-    .then(res => res.json())
-    .then(data => {
-        nodes = []; // Clear current canvas array
-        
-        // Flatten nested JSON groups (Language -> Section -> Nodes Array)
-        Object.keys(data.languages).forEach(lang => {
-            Object.keys(data.languages[lang]).forEach(section => {
-                let sectionNodes = data.languages[lang][section];
-                nodes = nodes.concat(sectionNodes);
+function loadMapAndDraw() {
+    fetch('/language/api/nodes/all')
+        .then(res => res.json())
+        .then(data => {
+            nodes = []; // Clear current canvas array
+            
+            // Flatten nested JSON groups (Language -> Section -> Nodes Array)
+            Object.keys(data.languages).forEach(lang => {
+                Object.keys(data.languages[lang]).forEach(section => {
+                    let sectionNodes = data.languages[lang][section];
+                    nodes = nodes.concat(sectionNodes);
+                });
             });
+            
+            draw(); // Render to the canvas layout
         });
-        
-        draw(); // Render to the canvas layout
-    });
+}
+
+// On script startup: load database profiles, then compute canvas rendering
+fetchUserXP().then(() => {
+    loadMapAndDraw();
+});
 
 // Keep track of calculated categories to render flags exactly once at their column roots
 function draw() {
@@ -229,17 +251,31 @@ function draw() {
     });
     ctx.setLineDash([]); // Reset line formatting
 
-    // 3. Render Circular Interactive Nodes
+	// 3. Render Circular Interactive Nodes
     nodes.forEach(node => {
         const pos = calculatedPositions[node.id];
         if (!pos) return;
 
+        // Pull dynamic XP score from database cache
+        const xp = userXPMapping[node.label] || 0;
+        let nodeColor = '#5f27cd'; // Default: Unstarted (Purple)
+        let strokeColor = '#fff';
+
+        // Color coding (Red - Yellow - Green Progression Pools)
+        if (xp > 0 && xp <= 30) {
+            nodeColor = '#e74c3c'; // Beginning
+        } else if (xp > 30 && xp <= 70) {
+            nodeColor = '#f1c40f'; // Intermediate
+        } else if (xp > 70) {
+            nodeColor = '#2ecc71'; // Mastered
+        }
+
         ctx.beginPath();
         ctx.arc(pos.x, pos.y, 25, 0, Math.PI * 2);
-        ctx.fillStyle = '#5f27cd';
+        ctx.fillStyle = nodeColor;
         ctx.fill();
         ctx.lineWidth = 3;
-        ctx.strokeStyle = '#fff';
+        ctx.strokeStyle = strokeColor;
         ctx.stroke();
 
         // Node Title Overlay Formatting
@@ -375,7 +411,12 @@ function testLLMCall(shoppingBagItems) {
         if(data.error) throw new Error(data.error);
         if(!data.exercises || data.exercises.length === 0) throw new Error("No exercises returned from matrix.");
         
-        // Initialize/Reset State tracking variables for the current session run
+        // Clean incoming LLM topics back to match canvas labels perfectly!
+        data.exercises.forEach(ex => {
+            ex.topic = cleanTopicName(ex.topic);
+        });
+
+        // Initialize/Reset State tracking variables
         activeSessionQueue = shuffleArray(data.exercises);
         sessionTotalAttempts = 0;
         sessionCorrectAnswers = 0;
@@ -546,6 +587,34 @@ function renderSummary() {
     const correctTopics = [...sessionAllTopicsInPlay].filter(t => !sessionFailedTopics.has(t));
     let correctBlocks = correctTopics.map(topic => `<li style="color:#2ecc71;">${topic}</li>`).join('');
     if(!correctBlocks) correctBlocks = `<span style="color:#aaa;">No clean sweeps this run.</span>`;
+
+    // UPDATE DATABASE WITH DYNAMIC PROGRESS XP IN BULK
+    const nickname = localStorage.getItem('sicrit_nickname');
+    const session_key = localStorage.getItem('sicrit_session_key');
+    
+    if (nickname && session_key) {
+        const promises = [...sessionAllTopicsInPlay].map(topicLabel => {
+            const isFailed = sessionFailedTopics.has(topicLabel);
+            const xpReward = isFailed ? 5 : 15; // Clean sweep = 15 XP, complete with mistakes = 5 XP
+            
+            return fetch('/language/api/user/update-xp', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    nickname,
+                    session_key,
+                    topic: topicLabel,
+                    change: xpReward
+                })
+            }).then(res => res.json());
+        });
+
+        // Ensure database writes complete BEFORE triggering canvas redraws
+        Promise.all(promises)
+            .then(() => fetchUserXP())
+            .then(() => draw())
+            .catch(err => console.error("Error updating completion achievements:", err));
+    }
 
     details.innerHTML = `
         <h3 style="color:#ff9f43; border-bottom:1px solid #444; padding-bottom:5px;">Conquest Complete!</h3>
@@ -728,6 +797,134 @@ function resetPullButton() {
         btn.style.opacity = "1";
         btn.style.cursor = "pointer";
     }
+}
+
+// Add these global state variables at the top of your script block
+let userXPMapping = {}; // Map: topicLabel -> XP (0-100)
+
+// Helper to sanitize LLM-returned topic format back to the original database key
+function cleanTopicName(rawTopic) {
+    const match = rawTopic.match(/^\[.*?\]\s*(.*)$/);
+    return match ? match[1].trim() : rawTopic.trim();
+}
+
+// Fetch user progress cache
+function fetchUserXP() {
+    const nickname = localStorage.getItem('sicrit_nickname');
+    const session_key = localStorage.getItem('sicrit_session_key');
+    
+    if (!nickname || !session_key) return Promise.resolve();
+
+    return fetch('/language/api/user/get-xp', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ nickname, session_key })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            userXPMapping = {};
+            data.topics.forEach(item => {
+                userXPMapping[item.topic] = item.xp;
+            });
+        }
+    })
+    .catch(err => console.error("Error updating local user XP cache:", err));
+}
+
+// Tab Switching Navigation
+function switchTab(tab) {
+    const tabNodesBtn = document.getElementById('tab-nodes');
+    const tabProfileBtn = document.getElementById('tab-profile');
+    const nodeDetails = document.getElementById('node-details');
+    const profileDetails = document.getElementById('profile-details');
+    
+    if (tab === 'nodes') {
+        tabNodesBtn.style.background = '#5f27cd';
+        tabProfileBtn.style.background = '#333';
+        nodeDetails.style.display = 'block';
+        profileDetails.style.display = 'none';
+    } else {
+        tabNodesBtn.style.background = '#333';
+        tabProfileBtn.style.background = '#5f27cd';
+        nodeDetails.style.display = 'none';
+        profileDetails.style.display = 'block';
+        renderProfileTab();
+    }
+}
+
+// Generate Graphical XP bars inside profile page
+function renderProfileTab() {
+    const listContainer = document.getElementById('xp-topics-list');
+    const totalXpCounter = document.getElementById('total-xp-counter');
+    
+    let totalXP = 0;
+    const keys = Object.keys(userXPMapping);
+    
+    if (keys.length === 0) {
+        listContainer.innerHTML = `<p style="color: #888; font-size: 0.9em; text-align:center; padding-top:20px;">No learning data yet. Brew some questions to earn XP!</p>`;
+        totalXpCounter.innerText = `Total XP: 0`;
+        return;
+    }
+    
+    let html = '';
+    keys.forEach(topic => {
+        const xp = userXPMapping[topic];
+        totalXP += xp;
+        
+        let color = '#5f27cd';
+        if (xp <= 30) color = '#e74c3c'; // Red
+        else if (xp <= 70) color = '#f1c40f'; // Yellow
+        else color = '#2ecc71'; // Green
+        
+        html += `
+            <div style="background: rgba(255,255,255,0.03); margin-bottom: 8px; padding: 10px; border-radius: 4px; border-left: 3px solid ${color}; position: relative;">
+                <div style="font-size: 0.9em; font-weight: bold; width: 85%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${topic}</div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
+                    <div style="background: #222; flex-grow: 1; height: 8px; border-radius: 4px; overflow: hidden;">
+                        <div style="background: ${color}; width: ${xp}%; height: 100%;"></div>
+                    </div>
+                    <span style="font-size: 0.8em; font-weight: bold; min-width: 45px; text-align: right;">${xp} / 100</span>
+                </div>
+                <!-- Delete Progress Icon -->
+                <button onclick="forgetTopicProgress('${topic.replace(/'/g, "\\'")}')" style="
+                    position: absolute; top: 8px; right: 8px; 
+                    background: transparent; color: #ff4d4d; border: none; 
+                    width: auto; padding: 0; margin: 0; cursor: pointer; 
+                    font-size: 0.85em; display: inline;
+                " title="Forget Progress">✕</button>
+            </div>
+        `;
+    });
+    
+    totalXpCounter.innerText = `Total XP: ${totalXP}`;
+    listContainer.innerHTML = html;
+}
+
+// Reset node database XP helper
+function forgetTopicProgress(topicName) {
+    if (!confirm(`Are you sure you want to completely forget progress for "${topicName}"? This will reset your XP.`)) return;
+    
+    const nickname = localStorage.getItem('sicrit_nickname');
+    const session_key = localStorage.getItem('sicrit_session_key');
+    
+    if (!nickname || !session_key) return;
+    
+    fetch('/language/api/user/forget-topic', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ nickname, session_key, topic: topicName })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            spawnFloatingLabel("Progress Forgot!", "#ff4d4d");
+            fetchUserXP().then(() => {
+                draw();
+                renderProfileTab();
+            });
+        }
+    });
 }
 </script>
 </body>
