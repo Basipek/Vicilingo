@@ -259,13 +259,13 @@ function draw() {
 		const lang = node.id.split('_')[0].toUpperCase(); // E.g., "JP"
 		
         // Pull dynamic XP score from database cache
-		const xpobj = userXPMapping[node.language+"_"+node.label] || 0;
+		const xpobj = userXPMapping[node.language+"_"+node.label] || -1;
         const xp = xpobj[0];
         let nodeColor = '#5f27cd'; // Default: Unstarted (Purple)
         let strokeColor = '#fff';
 
         // Color coding (Red - Yellow - Green Progression Pools)
-        if (xp > 0 && xp <= 30) {
+        if (xp >= 0 && xp <= 30) {
             nodeColor = '#e74c3c'; // Beginning
         } else if (xp > 30 && xp <= 70) {
             nodeColor = '#f1c40f'; // Intermediate
