@@ -12,21 +12,47 @@ from pathlib import Path
 
 import sqlite3
 
-# Dynamically resolve DB path relative to the blueprint directory to avoid folder collisions
 DB_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "vicilingo_users.db")
 
 def init_db():
-    """Initializes the Vicilingo user XP tracking tables."""
+    """Initializes and automatically updates the Vicilingo user XP tracking tables."""
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
+    
+    # 1. Create the base table if it doesn't exist
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS user_xp (
             nickname TEXT NOT NULL,
+            language TEXT NOT NULL,
             topic TEXT NOT NULL,
             xp INTEGER DEFAULT 0,
             PRIMARY KEY (nickname, topic)
         )
     ''')
+    
+    # 2. Define your desired schema (including any new columns you add in the future)
+    # format: "column_name": "DATA_TYPE CONTRAINTS"
+    target_columns = {
+        "nickname": "TEXT NOT NULL",
+        "language": "TEXT NOT NULL",
+        "topic": "TEXT NOT NULL",
+        "xp": "INTEGER DEFAULT 0",
+        # --- ADD YOUR FUTURE COLUMNS HERE ---
+        # "streak": "INTEGER DEFAULT 0",
+        # "last_active": "TEXT",
+    }
+    
+    # 3. Get currently existing columns in the database
+    cursor.execute("PRAGMA table_info(user_xp)")
+    existing_columns = {row[1] for row in cursor.fetchall()}  # row[1] is the column name
+    
+    # 4. Compare and add missing columns
+    for col_name, col_def in target_columns.items():
+        if col_name not in existing_columns:
+            # Safely append the new column
+            cursor.execute(f"ALTER TABLE user_xp ADD COLUMN {col_name} {col_def}")
+            print(f"Added missing column: {col_name}")
+
     conn.commit()
     conn.close()
 

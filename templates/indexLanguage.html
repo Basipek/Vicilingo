@@ -422,7 +422,7 @@ function testLLMCall(shoppingBagItems) {
         sessionCorrectAnswers = 0;
         sessionTotalMistakes = 0;
         sessionMistakenTopics = {};
-        sessionAllTopicsInPlay = new Set(shoppingBagItems.map(item => item[0]));
+        const sessionAllTopicsInPlay = shoppingBagItems.map(item => [item[0], item[3]]);
         sessionFailedTopics = new Set();
 
         // Fire off the first layout render
@@ -584,7 +584,7 @@ function renderSummary() {
     if(!mistakeBlocks) mistakeBlocks = `<span style="color:#2ecc71;">None! Absolute dominance.</span>`;
 
     // Parse Correct Topics (Total set minus failed set matrix)
-    const correctTopics = [...sessionAllTopicsInPlay].filter(t => !sessionFailedTopics.has(t));
+    const correctTopics = [...sessionAllTopicsInPlay].filter(t => !sessionFailedTopics.has(t[0]));
     let correctBlocks = correctTopics.map(topic => `<li style="color:#2ecc71;">${topic}</li>`).join('');
     if(!correctBlocks) correctBlocks = `<span style="color:#aaa;">No clean sweeps this run.</span>`;
 
@@ -593,9 +593,9 @@ function renderSummary() {
     const session_key = localStorage.getItem('sicrit_session_key');
     
     if (nickname && session_key) {
-        const promises = [...sessionAllTopicsInPlay].map(topicLabel => {
-            const isFailed = sessionFailedTopics.has(topicLabel);
-            const xpReward = isFailed ? 5 : 15; // Clean sweep = 15 XP, complete with mistakes = 5 XP
+        const promises = [...sessionAllTopicsInPlay].map(topicArr => {
+            const isFailed = sessionFailedTopics.has(topicArr[0]);
+            const xpReward = isFailed ? (5-2.155*sessionTotalMistakes) : 15; // Clean sweep = 15 XP, complete with mistakes = 5 XP
             
             return fetch('/language/api/user/update-xp', {
                 method: 'POST',
@@ -603,7 +603,8 @@ function renderSummary() {
                 body: JSON.stringify({
                     nickname,
                     session_key,
-                    topic: topicLabel,
+					language: topicArr[1],
+                    topic: topicArr[0],
                     change: xpReward
                 })
             }).then(res => res.json());
@@ -640,15 +641,6 @@ function renderSummary() {
             Return to Map
         </button>
     `;
-}
-
-// Simple evaluation handler helper
-function evaluateAnswer(selected, correct) {
-    if (selected === correct) {
-        alert('🎉 XP Earned! Great! (Trigger particle effects here)');
-    } else {
-        alert('❌ Wrong answer! Keep conquering!');
-    }
 }
 
 // Global State Storage
