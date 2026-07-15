@@ -255,9 +255,11 @@ function draw() {
     nodes.forEach(node => {
         const pos = calculatedPositions[node.id];
         if (!pos) return;
-
+		
+		const lang = node.id.split('_')[0].toUpperCase(); // E.g., "JP"
+		
         // Pull dynamic XP score from database cache
-		const xpobj = userXPMapping[node.label] || [0,""];
+		const xpobj = userXPMapping[node.language+"_"+node.label] || 0;
         const xp = xpobj[0];
         let nodeColor = '#5f27cd'; // Default: Unstarted (Purple)
         let strokeColor = '#fff';
@@ -818,7 +820,7 @@ function fetchUserXP() {
         if (data.status === 'success') {
             userXPMapping = {};
             data.topics.forEach(item => {
-                userXPMapping[item.topic] = [item.xp,item.language];
+                userXPMapping[item.language+"_"+item.topic] = item.xp;
             });
         }
     })
@@ -864,6 +866,7 @@ function renderProfileTab() {
     keys.forEach(topic => {
         const xp = userXPMapping[topic][0];
         const language = userXPMapping[topic][1];
+		topic=topic.split("_")[1];
         totalXP += xp;
         
         let color = '#5f27cd';
@@ -881,7 +884,7 @@ function renderProfileTab() {
                     <span style="font-size: 0.8em; font-weight: bold; min-width: 45px; text-align: right;">${xp} / 100</span>
                 </div>
                 <!-- Delete Progress Icon -->
-                <button onclick="forgetTopicProgress('${topic.replace(/'/g, "\\'")}')" style="
+                <button onclick="forgetTopicProgress('${topic.replace(/'/g, "\\'")}','${Language}')" style="
                     position: absolute; top: 8px; right: 8px; 
                     background: transparent; color: #ff4d4d; border: none; 
                     width: auto; padding: 0; margin: 0; cursor: pointer; 
@@ -896,7 +899,7 @@ function renderProfileTab() {
 }
 
 // Reset node database XP helper
-function forgetTopicProgress(topicName) {
+function forgetTopicProgress(topicName,topicLanguage) {
     if (!confirm(`Are you sure you want to completely forget progress for "${topicName}"? This will reset your XP.`)) return;
     
     const nickname = localStorage.getItem('sicrit_nickname');
@@ -907,7 +910,7 @@ function forgetTopicProgress(topicName) {
     fetch('/language/api/user/forget-topic', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ nickname, session_key, topic: topicName })
+        body: JSON.stringify({ nickname, session_key, topic: topicName, language: topicLanguage })
     })
     .then(res => res.json())
     .then(data => {

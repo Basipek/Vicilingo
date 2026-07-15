@@ -189,7 +189,7 @@ def generate_exercise():
     {{
       "exercises": [
         {{
-          "topic": "[LANGUAGE SHORTHAND and difficulty] Topic Name",
+          "topic": "Topic Name as given",
           "language": "Language as given",
           "question": "Example question text with Furigana (読み方) for Kanji?",
           "options": ["A", "B", "C", "D"],
@@ -266,7 +266,7 @@ def get_xp():
         rows = cursor.fetchall()
         conn.close()
         
-        topics_list = [{"topic": row["topic"], "xp": row["xp"]} for row in rows]
+        topics_list = [{"topic": row["topic"], "xp": row["xp"], "language": row["language"]} for row in rows]
         return jsonify({"status": "success", "topics": topics_list})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
