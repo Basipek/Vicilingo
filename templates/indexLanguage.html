@@ -814,11 +814,11 @@ window.addEventListener('mousedown', (e) => {
         `;
 		
 		// Dynamically append the culinary destroy trigger
-		if (selectedNode.is_custom) {
+		if (clickedNode.is_custom) {
 			detailHTML += `
 				<div style="margin-top: 15px; border-top: 1px solid #e67e22; padding-top: 15px;">
 					<span style="color: #e67e22; font-size: 0.85em; font-weight: bold; display: block; margin-bottom: 8px;">🍳 CUSTOM SANDBOX RECIPE</span>
-					<button onclick="deleteCustomNode('${selectedNode.id}')" style="
+					<button onclick="deleteCustomNode('${clickedNode.id}')" style="
 						background: #c0392b; 
 						color: white; 
 						border: none; 
