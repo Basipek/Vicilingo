@@ -78,6 +78,56 @@
             z-index: 100;
         }
         footer a { color: #00ffff; text-decoration: underline; }
+		
+		@media (max-width: 768px) {
+    /* Bottom drawer layout for the Inspector/Profile overlay */
+    #ui-overlay { 
+        top: auto;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        max-height: 40vh;
+        border-radius: 16px 16px 0 0;
+        box-sizing: border-box;
+        overflow-y: auto;
+        border: none;
+        border-top: 2px solid #333;
+    }
+
+    /* Bottom drawer layout for the Shopping Bag */
+    #shopping-bag-container {
+        top: auto;
+        bottom: 0;
+        right: -100vw !important; /* Move fully off-screen left/right */
+        width: 100vw;
+        height: 45vh;
+        border-radius: 16px 16px 0 0;
+        box-sizing: border-box;
+        transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    #shopping-bag-container.active {
+        right: 0 !important;
+    }
+
+    /* Keep the sandbox kitchen button floating safely above the bottom overlay */
+    #btn-kitchen-open {
+        bottom: calc(40vh + 15px) !important;
+        left: 15px !important;
+    }
+
+    /* Ensure modals scale down beautifully on small screens */
+    #kitchen-modal > div {
+        width: 92% !important;
+        max-height: 85vh;
+        overflow-y: auto;
+        padding: 15px !important;
+        box-sizing: border-box;
+    }
+    
+    footer {
+        display: none; /* Hide footer elements on tiny viewports to maximize canvas space */
+    }
+}
     </style>
 </head>
 <body>
@@ -1168,6 +1218,106 @@ function deleteCustomNode(nodeId) {
     })
     .catch(err => console.error("Error communicating with delete endpoint:", err));
 }
+
+// Mobile Touch Handling State
+let lastTapTime = 0;
+let touchStartPos = { x: 0, y: 0 };
+let isTouching = false;
+
+canvas.addEventListener('touchstart', (e) => {
+    // Avoid triggering map drags if interacting with UI panels
+    if (e.target.closest('#ui-overlay') || e.target.closest('#shopping-bag-container') || e.target.closest('#btn-kitchen-open') || e.target.closest('#kitchen-modal')) return;
+    
+    isTouching = true;
+    const touch = e.touches[0];
+    
+    startDrag.x = touch.clientX - camera.x;
+    startDrag.y = touch.clientY - camera.y;
+    
+    touchStartPos.x = touch.clientX;
+    touchStartPos.y = touch.clientY;
+}, { passive: true });
+
+canvas.addEventListener('touchmove', (e) => {
+    if (!isTouching) return;
+    const touch = e.touches[0];
+    
+    camera.x = touch.clientX - startDrag.x;
+    camera.y = touch.clientY - startDrag.y;
+    draw();
+}, { passive: true });
+
+canvas.addEventListener('touchend', (e) => {
+    if (!isTouching) return;
+    isTouching = false;
+    
+    const touch = e.changedTouches[0];
+    const dragDistance = Math.hypot(touch.clientX - touchStartPos.x, touch.clientY - touchStartPos.y);
+    
+    // Check if touch event was a tap, not a swipe
+    if (dragDistance < 10) {
+        let canvasX = touch.clientX - camera.x;
+        let canvasY = touch.clientY - camera.y;
+        
+        // Tap hit-radius expanded to 35px to support wider finger presses
+        let clickedNode = nodes.find(n => Math.hypot(n.x - canvasX, n.y - canvasY) < 35);
+        
+        if (clickedNode && (activeSessionQueue.length === 0)) {
+            const now = Date.now();
+            const DOUBLE_TAP_DELAY = 300;
+            
+            if (now - lastTapTime < DOUBLE_TAP_DELAY) {
+                // Double tap gesture: Instantly mix item
+                const parsedLanguage = (clickedNode.language || clickedNode.id.split('_')[0]).toUpperCase();
+                addToMixture(
+                    clickedNode.label,
+                    clickedNode.description,
+                    clickedNode.cheatsheet,
+                    parsedLanguage,
+                    defaultTier
+                );
+                spawnFloatingLabel(`[${parsedLanguage}] ${clickedNode.label} Mixed!`, "#ff9f43");
+                lastTapTime = 0; 
+            } else {
+                // Single tap gesture: Open Inspector Info Card
+                currentSelectedNode = clickedNode;
+                
+                let deleteBtnHtml = '';
+                if (clickedNode.is_custom || currentMapMode === 'personal') {
+                    deleteBtnHtml = `
+                        <button onclick="trashCustomNode('${clickedNode.id}')" style="background: #e74c3c; margin-top: 10px;">
+                            🔥 Trash Custom Recipe
+                        </button>
+                    `;
+                }
+
+                document.getElementById('node-details').innerHTML = `
+                    <h3 style="color: #ff9f43; margin-top:0;">${clickedNode.label}</h3>
+                    <p style="margin: 5px 0; font-size:0.9em; color:#ccc;"><b>Language:</b> ${clickedNode.language || 'Unknown'}</p>
+                    <p style="margin: 5px 0; font-size:0.9em; color:#ccc;"><b>Section:</b> ${clickedNode.section || 'General'}</p>
+                    <p style="margin-top: 10px;">${clickedNode.description || 'No description provided.'}</p>
+                    <p><small><b>Cheat:</b> ${clickedNode.cheatsheet || 'None'}</small></p>
+                    
+                    <div style="margin-top: 15px; border-top: 1px dashed #444; padding-top: 10px;">
+                        <label for="difficulty-select"><b>Target Tier Level:</b></label>
+                        <select id="difficulty-select">
+                            <option value="A1">A1 - Novice</option>
+                            <option value="A2">A2 - Beginner</option>
+                            <option value="B1">B1 - Intermediate</option>
+                            <option value="B2" selected>B2 - Advanced</option>
+                            <option value="C1">C1 - Expert</option>
+                            <option value="C2">C2 - Mastery</option>
+                        </select>
+                        
+                        <button onclick="handleAddClick()">📥 Add To Mixture</button>
+                        ${deleteBtnHtml}
+                    </div>
+                `;
+            }
+            lastTapTime = now;
+        }
+    }
+});//INTEGRATE THIS SPOT PROPERLY LATER
 </script>
 </body>
 <script src="/static/sicrit-auth-kit.js"></script>
