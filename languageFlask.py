@@ -170,7 +170,7 @@ def generate_exercise():
     structured_ingredients_str = "\n\n".join(recipe_blocks)
 
     prompt = f"""
-    You are the Vicilingo Game Engine. Your task is to generate language-learning exercises.
+    You are the Vicilingo Game Engine. Your task is to generate topic-learning exercises.
 
     ### INPUT DATA:
     {structured_ingredients_str}
@@ -190,6 +190,7 @@ def generate_exercise():
       "exercises": [
         {{
           "topic": "[LANGUAGE SHORTHAND and difficulty] Topic Name",
+          "language": "Language as given",
           "question": "Example question text with Furigana (読み方) for Kanji?",
           "options": ["A", "B", "C", "D"],
           "answer": "EXACT STRING MATCHING THE ANSWER"

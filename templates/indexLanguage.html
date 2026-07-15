@@ -422,7 +422,7 @@ function testLLMCall(shoppingBagItems) {
         sessionCorrectAnswers = 0;
         sessionTotalMistakes = 0;
         sessionMistakenTopics = {};
-        const sessionAllTopicsInPlay = shoppingBagItems.map(item => [item[0], item[3]]);
+        const sessionAllTopicsInPlay = activeSessionQueue.map(item => [item.topic, item.language]);
         sessionFailedTopics = new Set();
 
         // Fire off the first layout render
@@ -595,7 +595,7 @@ function renderSummary() {
     if (nickname && session_key) {
         const promises = [...sessionAllTopicsInPlay].map(topicArr => {
             const isFailed = sessionFailedTopics.has(topicArr[0]);
-            const xpReward = isFailed ? (5-2.155*sessionTotalMistakes) : 15; // Clean sweep = 15 XP, complete with mistakes = 5 XP
+            const xpReward = isFailed ? (5-2.155*sessionTotalMistakes) : 5; // Clean sweep = 15 XP, complete with mistakes = 5 XP
             
             return fetch('/language/api/user/update-xp', {
                 method: 'POST',
