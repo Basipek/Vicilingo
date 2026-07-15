@@ -768,8 +768,8 @@ function renderSummary() {
     
     if (nickname && session_key) {
         const promises = [...sessionAllTopicsInPlay].map(topicArr => {
-            //const isFailed = sessionFailedTopics.has(topicArr[0]);
-            const xpReward = 5-1.905*sessionMistakenTopics[topicArr[0]]//isFailed ? (5-2.155*sessionMistakenTopics[topicArr[0]]) : (5+sessionCorrectAnswers/2.433);
+            const isFailed = sessionFailedTopics.has(topicArr[0]);
+            const xpReward = isFailed ? (5-1.905*sessionMistakenTopics[topicArr[0]]) : (5);
             
             return fetch('/language/api/user/update-xp', {
                 method: 'POST',
