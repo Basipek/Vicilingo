@@ -81,7 +81,100 @@
     </style>
 </head>
 <body>
+<button id="open-kitchen-btn" onclick="openKitchenModal()" style="
+    position: fixed; 
+    bottom: 25px; 
+    right: 25px; 
+    z-index: 99; 
+    background: #e67e22; 
+    border-radius: 50px; 
+    font-weight: bold; 
+    box-shadow: 0 4px 15px rgba(230, 126, 34, 0.4); 
+    border: none; 
+    padding: 12px 24px; 
+    color: white; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px;
+    font-size: 14px;
+    font-family: sans-serif;
+    transition: transform 0.2s, background 0.2s;
+" onmouseover="this.style.transform='scale(1.05)'; this.style.background='#d35400';" onmouseout="this.style.transform='scale(1)'; this.style.background='#e67e22';">
+    🍳 Kitchen Sandbox
+</button>
 
+<div id="kitchen-modal" style="
+    display: none; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0,0,0,0.85); 
+    z-index: 1000; 
+    justify-content: center; 
+    align-items: center; 
+    backdrop-filter: blur(5px);
+">
+    <div style="
+        background: #1e1e2f; 
+        border: 2px solid #e67e22; 
+        border-radius: 12px; 
+        width: 500px; 
+        max-width: 90%; 
+        padding: 25px; 
+        box-shadow: 0 10px 30px rgba(230,126,34,0.3); 
+        color: #fff; 
+        font-family: sans-serif; 
+        position: relative;
+    ">
+        <button onclick="closeKitchenModal()" style="
+            position: absolute; 
+            top: 15px; 
+            right: 15px; 
+            background: transparent; 
+            border: none; 
+            color: #aaa; 
+            font-size: 1.5em; 
+            cursor: pointer; 
+            transition: color 0.2s;
+        " onmouseover="this.style.color='#ff4d4d'" onmouseout="this.style.color='#aaa'">✕</button>
+        
+        <h2 style="margin-top: 0; color: #e67e22; border-bottom: 2px solid #e67e22; padding-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+            🧑‍🍳 Vicilingo Kitchen Sandbox
+        </h2>
+        <p style="color: #bbb; font-size: 0.9em; margin-bottom: 20px; line-height: 1.4;">
+            Bake new study flavors here! Combine your custom prompts and themes into dynamic canvas map nodes.
+        </p>
+        
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+            <div>
+                <label style="font-weight: bold; color: #e67e22; display: block; margin-bottom: 5px;">Cuisine Style (Language)</label>
+                <input id="kitchen-lang" type="text" placeholder="e.g., Japanese, Spanish, Custom" value="Custom" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a40; color: #fff; box-sizing: border-box;">
+            </div>
+            
+            <div>
+                <label style="font-weight: bold; color: #e67e22; display: block; margin-bottom: 5px;">Course (Category/Section)</label>
+                <input id="kitchen-sec" type="text" placeholder="e.g., Kitchen Sandbox, Grammar, Vocab" value="Kitchen Sandbox" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a40; color: #fff; box-sizing: border-box;">
+            </div>
+            
+            <div>
+                <label style="font-weight: bold; color: #e67e22; display: block; margin-bottom: 5px;">Dish Name (Topic Label)</label>
+                <input id="kitchen-label" type="text" placeholder="e.g., Kansai Ending Particles" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a40; color: #fff; box-sizing: border-box;">
+            </div>
+            
+            <div>
+                <label style="font-weight: bold; color: #e67e22; display: block; margin-bottom: 5px;">Recipe Prompt (Detailed LLM Instruction)</label>
+                <textarea id="kitchen-prompt" rows="5" placeholder="Explain what the AI should generate when cooking exercises. E.g.: Create multiple choice exercises testing the student's conversational knowledge on Kansai-ben sentence endings (nen, ya, wa) with complete grammatical explanations." style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a40; color: #fff; box-sizing: border-box; resize: vertical; font-family: sans-serif;"></textarea>
+            </div>
+            
+            <button onclick="bakeCustomNode()" style="background: #e67e22; color: #fff; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: background 0.2s;" onmouseover="this.style.background='#d35400'" onmouseout="this.style.background='#e67e22'">
+                🍲 Bake Custom Node
+            </button>
+        </div>
+    </div>
+</div>
 <div id="canvas-container">
     <canvas id="mapCanvas"></canvas>
     
@@ -152,21 +245,33 @@ const bgImage = new Image();
 bgImage.src = 'https://static.vecteezy.com/system/resources/thumbnails/035/393/988/small_2x/world-map-modern-globe-map-generalized-world-map-world-map-on-isolated-background-illustration-vector.jpg';
 
 function loadMapAndDraw() {
-    fetch('/language/api/nodes/all')
+    const nickname = localStorage.getItem('sicrit_nickname') || '';
+    
+    fetch(`/language/api/nodes/all?nickname=${encodeURIComponent(nickname)}`)
         .then(res => res.json())
         .then(data => {
-            nodes = []; // Clear current canvas array
+            nodes = []; // Clear active node registry
             
-            // Flatten nested JSON groups (Language -> Section -> Nodes Array)
-            Object.keys(data.languages).forEach(lang => {
-                Object.keys(data.languages[lang]).forEach(section => {
-                    let sectionNodes = data.languages[lang][section];
-                    nodes = nodes.concat(sectionNodes);
+            if (data.languages) {
+                Object.keys(data.languages).forEach(lang => {
+                    Object.keys(data.languages[lang]).forEach(section => {
+                        let sectionNodes = data.languages[lang][section];
+                        
+                        // Explicitly bind metadata properties to ensure accurate XP mapping matching
+                        sectionNodes.forEach(node => {
+                            node.language = lang;
+                            node.section = section;
+                        });
+                        
+                        nodes = nodes.concat(sectionNodes);
+                    });
                 });
-            });
+            }
             
-            draw(); // Render to the canvas layout
-        });
+            computeNodePositions();
+            draw();
+        })
+        .catch(err => console.error("Error drawing canvas architecture layout:", err));
 }
 
 // On script startup: load database profiles, then compute canvas rendering
@@ -261,27 +366,35 @@ function draw() {
         // Pull dynamic XP score from database cache
 		const xpobj = userXPMapping[lang+"_"+node.label] || [-1,""];
         const xp = xpobj[0];
+        
         let nodeColor = '#5f27cd'; // Default: Unstarted (Purple)
-        let strokeColor = '#fff';
+        
+        // Highlight custom recipes with a warm orange border, standard with clean white
+        let strokeColor = node.is_custom ? '#e67e22' : '#fff';
 
-        // Color coding (Red - Yellow - Green Progression Pools)
         if (xp >= 0 && xp <= 30) {
-            nodeColor = '#e74c3c'; // Beginning
+            nodeColor = '#e74c3c'; // Red
         } else if (xp > 30 && xp <= 70) {
-            nodeColor = '#f1c40f'; // Intermediate
+            nodeColor = '#f1c40f'; // Yellow
         } else if (xp > 70) {
-            nodeColor = '#2ecc71'; // Mastered
+            nodeColor = '#2ecc71'; // Green
         }
 
         ctx.beginPath();
         ctx.arc(pos.x, pos.y, 25, 0, Math.PI * 2);
         ctx.fillStyle = nodeColor;
         ctx.fill();
-        ctx.lineWidth = 3;
+        ctx.lineWidth = node.is_custom ? 4 : 3; // Thicker border on custom nodes
         ctx.strokeStyle = strokeColor;
         ctx.stroke();
 
-        // Node Title Overlay Formatting
+        // 🍳 Visual chef icon badge directly on top of custom recipes
+        if (node.is_custom) {
+            ctx.fillStyle = '#fff';
+            ctx.font = '15px sans-serif';
+            ctx.fillText('🍳', pos.x, pos.y - 48);
+        }
+
         ctx.fillStyle = '#fff';
         ctx.font = '14px sans-serif';
         ctx.textAlign = 'center';
@@ -643,7 +756,7 @@ window.addEventListener('mousedown', (e) => {
         currentSelectedNode = clickedNode; // Cache globally to access dynamically
         
         // Dynamically append description, cheatsheet, difficulty selectors, and submission actions
-        document.getElementById('node-details').innerHTML = `
+        detailHTML = `
             <h3>${clickedNode.label}</h3>
             <p>${clickedNode.description}</p>
             <small><b>Cheat:</b> ${clickedNode.cheatsheet}</small>
@@ -662,6 +775,30 @@ window.addEventListener('mousedown', (e) => {
                 <button onclick="handleAddClick()">📥 Add To Mixture</button>
             </div>
         `;
+		
+		// Dynamically append the culinary destroy trigger
+		if (selectedNode.is_custom) {
+			detailHTML += `
+				<div style="margin-top: 15px; border-top: 1px solid #e67e22; padding-top: 15px;">
+					<span style="color: #e67e22; font-size: 0.85em; font-weight: bold; display: block; margin-bottom: 8px;">🍳 CUSTOM SANDBOX RECIPE</span>
+					<button onclick="deleteCustomNode('${selectedNode.id}')" style="
+						background: #c0392b; 
+						color: white; 
+						border: none; 
+						padding: 8px 12px; 
+						border-radius: 4px; 
+						cursor: pointer; 
+						width: 100%; 
+						font-weight: bold;
+						transition: background 0.2s;
+					" onmouseover="this.style.background='#962d22'" onmouseout="this.style.background='#c0392b'">
+						🔥 Trash Custom Node
+					</button>
+				</div>
+			`;
+		}
+		
+		document.getElementById('node-details').innerHTML = detailHTML;
     } else {
         isDragging = true;
         startDrag.x = e.clientX - camera.x;
@@ -902,6 +1039,97 @@ function forgetTopicProgress(topicName,topicLanguage) {
             });
         }
     });
+}
+
+// Open/Close sandbox triggers
+function openKitchenModal() {
+    const nickname = localStorage.getItem('sicrit_nickname');
+    const session_key = localStorage.getItem('sicrit_session_key');
+    if (!nickname || !session_key) {
+        spawnFloatingLabel("Log in to enter the Kitchen!", "#e74c3c");
+        if (window.SicritAuth) window.SicritAuth.showLogin();
+        return;
+    }
+    document.getElementById('kitchen-modal').style.display = 'flex';
+}
+
+function closeKitchenModal() {
+    document.getElementById('kitchen-modal').style.display = 'none';
+}
+
+// REST Client: Create custom topic node recipe
+function bakeCustomNode() {
+    const nickname = localStorage.getItem('sicrit_nickname');
+    const session_key = localStorage.getItem('sicrit_session_key');
+    
+    const language = document.getElementById('kitchen-lang').value.trim();
+    const section = document.getElementById('kitchen-sec').value.trim();
+    const label = document.getElementById('kitchen-label').value.trim();
+    const prompt = document.getElementById('kitchen-prompt').value.trim();
+    
+    if (!label || !prompt) {
+        alert("Please provide both a Dish Name and Recipe Prompt instructions!");
+        return;
+    }
+    
+    fetch('/language/api/nodes/custom/create', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            nickname,
+            session_key,
+            language,
+            section,
+            label,
+            prompt
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            spawnFloatingLabel("🍲 Recipe Baked successfully!", "#2ecc71");
+            closeKitchenModal();
+            // Reset modal values
+            document.getElementById('kitchen-label').value = '';
+            document.getElementById('kitchen-prompt').value = '';
+            // Reload sandbox canvas map
+            loadMapAndDraw();
+        } else {
+            alert("Cooking failed: " + data.message);
+        }
+    })
+    .catch(err => {
+        console.error("Communication error inside kitchen sandbox:", err);
+    });
+}
+
+// REST Client: Trash custom recipe node
+function deleteCustomNode(nodeId) {
+    if (!confirm("Are you sure you want to completely trash this custom node? This cannot be undone.")) return;
+    
+    const nickname = localStorage.getItem('sicrit_nickname');
+    const session_key = localStorage.getItem('sicrit_session_key');
+    
+    fetch('/language/api/nodes/custom/delete', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            nickname,
+            session_key,
+            node_id: nodeId
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            spawnFloatingLabel("🔥 Custom Node Trashed!", "#ff4d4d");
+            document.getElementById('node-details').innerHTML = "Click a node to inspect...";
+            loadMapAndDraw();
+        } else {
+            alert("Trash failure: " + data.message);
+        }
+    })
+    .catch(err => console.error("Error communicating with delete endpoint:", err));
 }
 </script>
 </body>

@@ -12,6 +12,9 @@ from pathlib import Path
 
 import sqlite3
 
+import re
+import time
+
 DB_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "vicilingo_users.db")
 
 def init_db():
@@ -86,46 +89,181 @@ def index():
 def get_all_nodes():
     """
     Dynamically scans the languagegame directory, reads all .json files,
-    and aggregates them into a single cohesive structural payload.
+    and merges custom user-baked recipe nodes from /static/<nickname>_custom.json.
     """
-    target_dir = os.path.join(language_bp.static_folder, 'languagegame')
-    combined_data = {
+    target_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "languagegame")
+    nickname = request.args.get('nickname')
+    
+    # Initialize empty container
+    combined = {
         "languages": {}
     }
     
-    try:
-        if not os.path.exists(target_dir):
-            return jsonify({"error": f"Directory structural path missing: {target_dir}"}), 404
-            
-        # Scan everything inside the folder
+    # 1. Load native static directory files
+    if os.path.exists(target_dir):
         for filename in os.listdir(target_dir):
             if filename.endswith('.json'):
-                file_path = os.path.join(target_dir, filename)
-                
+                filepath = os.path.join(target_dir, filename)
                 try:
-                    with open(file_path, 'r', encoding='utf-8') as f:
-                        file_json = json.load(f)
-                        
-                    lang_name = file_json.get('language', 'Unknown')
-                    section_name = file_json.get('section', filename.replace('.json', ''))
-                    file_nodes = file_json.get('nodes', [])
-                    
-                    # Initialize language tracking matrix if missing
-                    if lang_name not in combined_data["languages"]:
-                        combined_data["languages"][lang_name] = {}
-                        
-                    # Append node matrices grouped cleanly by sections
-                    combined_data["languages"][lang_name][section_name] = file_nodes
-                    
-                except (json.JSONDecodeError, IOError) as e:
-                    # Skip or log corrupted files silently so one broken file won't crash the whole map load
-                    print(f" [!] Error reading structural file {filename}: {str(e)}")
-                    continue
+                    with open(filepath, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                        if "languages" in data:
+                            for lang, sections in data["languages"].items():
+                                if lang not in combined["languages"]:
+                                    combined["languages"][lang] = {}
+                                for sec, nodes_list in sections.items():
+                                    if sec not in combined["languages"][lang]:
+                                        combined["languages"][lang][sec] = []
+                                    existing_ids = {n["id"] for n in combined["languages"][lang][sec]}
+                                    for n in nodes_list:
+                                        if n["id"] not in existing_ids:
+                                            combined["languages"][lang][sec].append(n)
+                except Exception as e:
+                    print(f"Error reading native json file {filename}: {e}")
 
-        return jsonify(combined_data)
+    # 2. Dynamically merge Kitchen Sandbox Custom Nodes
+    if nickname:
+        static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+        custom_file = os.path.join(static_dir, f"{nickname}_custom.json")
+        
+        if os.path.exists(custom_file):
+            try:
+                with open(custom_file, 'r', encoding='utf-8') as f:
+                    custom_data = json.load(f)
+                    if "languages" in custom_data:
+                        for lang, sections in custom_data["languages"].items():
+                            if lang not in combined["languages"]:
+                                combined["languages"][lang] = {}
+                            for sec, nodes_list in sections.items():
+                                if sec not in combined["languages"][lang]:
+                                    combined["languages"][lang][sec] = []
+                                existing_ids = {n["id"] for n in combined["languages"][lang][sec]}
+                                for n in nodes_list:
+                                    if n["id"] not in existing_ids:
+                                        # Enforce visual styling identifier
+                                        n["is_custom"] = True
+                                        combined["languages"][lang][sec].append(n)
+            except Exception as e:
+                print(f"Error loading custom nodes for user {nickname}: {e}")
+                
+    return jsonify(combined)
 
+
+@language_bp.route('/api/nodes/custom/create', methods=['POST'])
+def create_custom_node():
+    """
+    Bakes a custom node topic recipe and stores it in the user's specific JSON file.
+    """
+    data = request.get_json() or {}
+    nickname = data.get('nickname') or 'Anonymous'
+    session_key = data.get('session_key')
+    
+    if not session_is_auth(nickname, session_key):
+        return jsonify({"status": "error", "message": "Access Denied: Authentication session expired."}), 403
+        
+    language = data.get('language', 'Custom').strip() or 'Custom'
+    section = data.get('section', 'Kitchen Sandbox').strip() or 'Kitchen Sandbox'
+    label = data.get('label', '').strip()
+    prompt = data.get('prompt', '').strip()
+    
+    if not label or not prompt:
+        return jsonify({"status": "error", "message": "Dish Name (Label) and Recipe Prompt are required inputs."}), 400
+        
+    # Generate clean, URL-safe node ID using timestamping
+    safe_label = re.sub(r'[^a-zA-Z0-9_]', '', label.lower().replace(' ', '_'))
+    node_id = f"custom_{nickname.lower()}_{safe_label}_{int(time.time())}"
+    
+    static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+    os.makedirs(static_dir, exist_ok=True)
+    custom_file = os.path.join(static_dir, f"{nickname}_custom.json")
+    
+    # Load existing custom registry or instantiate standard schema
+    if os.path.exists(custom_file):
+        try:
+            with open(custom_file, 'r', encoding='utf-8') as f:
+                custom_data = json.load(f)
+        except Exception:
+            custom_data = {"languages": {}}
+    else:
+        custom_data = {"languages": {}}
+        
+    if "languages" not in custom_data:
+        custom_data["languages"] = {}
+    if language not in custom_data["languages"]:
+        custom_data["languages"][language] = {}
+    if section not in custom_data["languages"][language]:
+        custom_data["languages"][language][section] = []
+        
+    new_node = {
+        "id": node_id,
+        "label": label,
+        "prompt": prompt,
+        "is_custom": True,
+        "language": language,
+        "section": section
+    }
+    
+    custom_data["languages"][language][section].append(new_node)
+    
+    try:
+        with open(custom_file, 'w', encoding='utf-8') as f:
+            json.dump(custom_data, f, indent=4, ensure_ascii=False)
+        return jsonify({"status": "success", "node": new_node})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@language_bp.route('/api/nodes/custom/delete', methods=['POST'])
+def delete_custom_node():
+    """
+    Removes a custom-baked node from the user's custom JSON file.
+    """
+    data = request.get_json() or {}
+    nickname = data.get('nickname') or 'Anonymous'
+    session_key = data.get('session_key')
+    node_id = data.get('node_id')
+    
+    if not session_is_auth(nickname, session_key):
+        return jsonify({"status": "error", "message": "Access Denied."}), 403
+        
+    if not node_id:
+        return jsonify({"status": "error", "message": "No recipe target node supplied."}), 400
+        
+    static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+    custom_file = os.path.join(static_dir, f"{nickname}_custom.json")
+    
+    if not os.path.exists(custom_file):
+        return jsonify({"status": "error", "message": "No custom files found."}), 404
+        
+    try:
+        with open(custom_file, 'r', encoding='utf-8') as f:
+            custom_data = json.load(f)
+            
+        modified = False
+        if "languages" in custom_data:
+            for lang, sections in list(custom_data["languages"].items()):
+                for sec, nodes_list in list(sections.items()):
+                    original_count = len(nodes_list)
+                    filtered_nodes = [n for n in nodes_list if n["id"] != node_id]
+                    
+                    if len(filtered_nodes) < original_count:
+                        custom_data["languages"][lang][sec] = filtered_nodes
+                        modified = True
+                        
+                    # Garbage collection for empty objects
+                    if not custom_data["languages"][lang][sec]:
+                        del custom_data["languages"][lang][sec]
+                if not custom_data["languages"][lang]:
+                    del custom_data["languages"][lang]
+                    
+        if modified:
+            with open(custom_file, 'w', encoding='utf-8') as f:
+                json.dump(custom_data, f, indent=4, ensure_ascii=False)
+            return jsonify({"status": "success", "message": "Node successfully removed."})
+        else:
+            return jsonify({"status": "error", "message": "Target recipe not found."}), 404
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @language_bp.route('/api/nodesfrom/<filename>')
 def get_nodes(filename):
