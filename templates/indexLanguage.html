@@ -184,6 +184,9 @@
         <div style="display: flex; gap: 5px; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 8px;">
             <button id="tab-nodes" onclick="switchTab('nodes')" style="margin:0; background: #5f27cd; flex: 1;">🗺️ Inspector</button>
             <button id="tab-profile" onclick="switchTab('profile')" style="margin:0; background: #333; flex: 1;">👤 Progress</button>
+			<button id="btn-map-toggle" onclick="toggleMapMode()" style="margin: 0; background: #e67e22; border: 1px solid #d35400; font-size: 0.9em; display: flex; align-items: center; justify-content: center; gap: 6px;">
+				🗺️ Switch to Personal Map
+			</button>
         </div>
 
         <!-- Node Inspector Frame -->
@@ -244,33 +247,68 @@ let nodes = [];
 const bgImage = new Image();
 bgImage.src = 'https://static.vecteezy.com/system/resources/thumbnails/035/393/988/small_2x/world-map-modern-globe-map-generalized-world-map-world-map-on-isolated-background-illustration-vector.jpg';
 
+// State tracker for map views
+let currentMapMode = 'main'; // 'main' or 'personal'
+
 function loadMapAndDraw() {
-    const nickname = localStorage.getItem('sicrit_nickname') || '';
+    const nickname = localStorage.getItem('sicrit_nickname') || 'Anonymous';
     
-    fetch(`/language/api/nodes/all?nickname=${encodeURIComponent(nickname)}`)
+    // Pick the right dynamic endpoint
+    let url = (currentMapMode === 'personal') 
+        ? `/language/api/nodes/personal/${encodeURIComponent(nickname)}` 
+        : '/language/api/nodes/all';
+
+    fetch(url)
         .then(res => res.json())
         .then(data => {
-            nodes = []; // Clear active node registry
+            nodes = []; // Purge current canvas nodes
             
-            if (data.languages) {
+            if (data && data.languages) {
                 Object.keys(data.languages).forEach(lang => {
                     Object.keys(data.languages[lang]).forEach(section => {
                         let sectionNodes = data.languages[lang][section];
-                        
-                        // Explicitly bind metadata properties to ensure accurate XP mapping matching
                         sectionNodes.forEach(node => {
                             node.language = lang;
                             node.section = section;
+                            if (currentMapMode === 'personal') {
+                                node.is_custom = true;
+                            }
                         });
-                        
                         nodes = nodes.concat(sectionNodes);
                     });
                 });
             }
-            
-            draw();
+            draw(); // Redraw canvas
         })
-        .catch(err => console.error("Error drawing canvas architecture layout:", err));
+        .catch(err => {
+            console.error("Error loading nodes layout:", err);
+        });
+}
+
+function toggleMapMode() {
+    const nickname = localStorage.getItem('sicrit_nickname');
+    const session_key = localStorage.getItem('sicrit_session_key');
+    const toggleBtn = document.getElementById('btn-map-toggle');
+    
+    if (currentMapMode === 'main') {
+        if (!nickname || !session_key) {
+            spawnFloatingLabel("Log in to access your Personal Map!", "#e74c3c");
+            if (window.SicritAuth) window.SicritAuth.showLogin();
+            return;
+        }
+        currentMapMode = 'personal';
+        toggleBtn.innerHTML = '🗺️ Switch to Main Map';
+        toggleBtn.style.background = '#5f27cd';
+        toggleBtn.style.border = '1px solid #341f97';
+    } else {
+        currentMapMode = 'main';
+        toggleBtn.innerHTML = '🗺️ Switch to Personal Map';
+        toggleBtn.style.background = '#e67e22';
+        toggleBtn.style.border = '1px solid #d35400';
+    }
+    
+    document.getElementById('node-details').innerHTML = 'Click a node to inspect...';
+    loadMapAndDraw();
 }
 
 // On script startup: load database profiles, then compute canvas rendering
