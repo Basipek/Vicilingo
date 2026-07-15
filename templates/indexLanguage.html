@@ -402,7 +402,10 @@ function testLLMCall(shoppingBagItems) {
         sessionCorrectAnswers = 0;
         sessionTotalMistakes = 0;
         sessionMistakenTopics = {};
+		
         sessionAllTopicsInPlay = data.exercises.map(item => [item.topic, item.language]);
+        sessionAllTopicsInPlay = [...new Set(sessionAllTopicsPlay.map(item => JSON.stringify(item)))].map(item => JSON.parse(item));
+		
         sessionFailedTopics = new Set();
 
         // Fire off the first layout render
