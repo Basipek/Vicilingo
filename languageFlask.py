@@ -210,10 +210,10 @@ def create_custom_node():
     new_node = {
         "id": node_id,
         "label": label,
-        "prompt": prompt,
+        "cheatsheet": prompt,
         "is_custom": True,
         "language": language,
-        "section": section
+        "description": section
     }
     
     custom_data["languages"][language][section].append(new_node)
