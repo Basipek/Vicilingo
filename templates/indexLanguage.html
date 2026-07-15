@@ -78,54 +78,45 @@
             z-index: 100;
         }
         footer a { color: #00ffff; text-decoration: underline; }
-		
-		@media (max-width: 768px) {
-    /* Bottom drawer layout for the Inspector/Profile overlay */
-    #ui-overlay { 
-        top: auto;
-        bottom: 0;
-        left: 0;
-        width: 100vw;
-        max-height: 40vh;
-        border-radius: 16px 16px 0 0;
-        box-sizing: border-box;
+/* ==========================================================================
+   Mobile-Friendly Responsive Styling
+   ========================================================================== */
+@media (max-width: 768px) {
+    #ui-overlay {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        width: auto;
+        max-height: 42vh;
         overflow-y: auto;
-        border: none;
-        border-top: 2px solid #333;
+        padding: 15px;
     }
-
-    /* Bottom drawer layout for the Shopping Bag */
+    
     #shopping-bag-container {
         top: auto;
-        bottom: 0;
-        right: -100vw !important; /* Move fully off-screen left/right */
-        width: 100vw;
-        height: 45vh;
-        border-radius: 16px 16px 0 0;
-        box-sizing: border-box;
-        transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    #shopping-bag-container.active {
-        right: 0 !important;
-    }
-
-    /* Keep the sandbox kitchen button floating safely above the bottom overlay */
-    #btn-kitchen-open {
-        bottom: calc(40vh + 15px) !important;
-        left: 15px !important;
-    }
-
-    /* Ensure modals scale down beautifully on small screens */
-    #kitchen-modal > div {
-        width: 92% !important;
-        max-height: 85vh;
+        bottom: 55px; /* Safely floats above the global footer */
+        left: 10px;
+        right: -110%; /* Starts off-screen */
+        width: auto;
+        max-height: 40vh;
         overflow-y: auto;
-        padding: 15px !important;
-        box-sizing: border-box;
+        padding: 15px;
+        transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.4s ease;
+    }
+    
+    #shopping-bag-container.active {
+        right: 10px;
+        left: 10px;
+    }
+    
+    button, select {
+        padding: 10px 14px; /* Larger hit target boundaries for thumbs */
+        font-size: 0.95rem;
     }
     
     footer {
-        display: none; /* Hide footer elements on tiny viewports to maximize canvas space */
+        padding: 8px 0;
+        font-size: 0.72rem;
     }
 }
     </style>
@@ -604,7 +595,6 @@ function testLLMCall(shoppingBagItems) {
         sessionMistakenTopics = {};
 		
         sessionAllTopicsInPlay = data.exercises.map(item => [item.topic, item.language]);
-        sessionAllTopicsInPlay = [...new Set(sessionAllTopicsInPlay.map(item => JSON.stringify(item)))].map(item => JSON.parse(item));
 		
         sessionFailedTopics = new Set();
 
@@ -767,7 +757,8 @@ function renderSummary() {
     if(!mistakeBlocks) mistakeBlocks = `<span style="color:#2ecc71;">None! Absolute dominance.</span>`;
 
     // Parse Correct Topics (Total set minus failed set matrix)
-    const correctTopics = [...sessionAllTopicsInPlay].filter(t => !sessionFailedTopics.has(t[0]));
+    let correctTopics = [...sessionAllTopicsInPlay].filter(t => !sessionFailedTopics.has(t[0]));
+	correctTopics = [...new Set(correctTopics.map(item => JSON.stringify(item)))].map(item => JSON.parse(item));//Only uniques
     let correctBlocks = correctTopics.map(topic => `<li style="color:#2ecc71;">${topic}</li>`).join('');
     if(!correctBlocks) correctBlocks = `<span style="color:#aaa;">No clean sweeps this run.</span>`;
 
@@ -777,8 +768,8 @@ function renderSummary() {
     
     if (nickname && session_key) {
         const promises = [...sessionAllTopicsInPlay].map(topicArr => {
-            const isFailed = sessionFailedTopics.has(topicArr[0]);
-            const xpReward = isFailed ? (5-2.155*sessionMistakenTopics[topicArr[0]]) : (5+sessionCorrectAnswers/2.433);
+            //const isFailed = sessionFailedTopics.has(topicArr[0]);
+            const xpReward = 5-1.905*sessionMistakenTopics[topicArr[0]]//isFailed ? (5-2.155*sessionMistakenTopics[topicArr[0]]) : (5+sessionCorrectAnswers/2.433);
             
             return fetch('/language/api/user/update-xp', {
                 method: 'POST',
@@ -830,67 +821,169 @@ function renderSummary() {
 let shoppingBag = []; 
 let currentSelectedNode = null; 
 
-// Mouse Click/Drag routing evaluator
+// ==========================================================================
+// Unified Canvas Node Selector (Shared across Mouse & Touch)
+// ==========================================================================
+function selectNode(clickedNode) {
+    currentSelectedNode = clickedNode; // Cache globally
+    
+    let detailHTML = `
+        <h3>${clickedNode.label}</h3>
+        <p>${clickedNode.description}</p>
+        <small><b>Cheat:</b> ${clickedNode.cheatsheet}</small>
+        
+        <div style="margin-top: 15px; border-top: 1px dashed #444; padding-top: 10px;">
+            <label for="difficulty-select"><b>Target Tier Level:</b></label>
+            <select id="difficulty-select">
+                <option value="A1">A1 - Novice</option>
+                <option value="A2">A2 - Beginner</option>
+                <option value="B1">B1 - Intermediate</option>
+                <option value="B2">B2 - Advanced</option>
+                <option value="C1">C1 - Expert</option>
+                <option value="C2">C2 - Mastery</option>
+            </select>
+            
+            <button onclick="handleAddClick()">📥 Add To Mixture</button>
+        </div>
+    `;
+    
+    // Dynamically append the custom sandbox delete action if available
+    if (clickedNode.is_custom) {
+        detailHTML += `
+            <div style="margin-top: 15px; border-top: 1px solid #e67e22; padding-top: 15px;">
+                <span style="color: #e67e22; font-size: 0.85em; font-weight: bold; display: block; margin-bottom: 8px;">🍳 CUSTOM SANDBOX RECIPE</span>
+                <button onclick="deleteCustomNode('${clickedNode.id}')" style="
+                    background: #c0392b; 
+                    color: white; 
+                    border: none; 
+                    padding: 8px 12px; 
+                    border-radius: 4px; 
+                    cursor: pointer; 
+                    width: 100%; 
+                    font-weight: bold;
+                    transition: background 0.2s;
+                " onmouseover="this.style.background='#962d22'" onmouseout="this.style.background='#c0392b'">
+                    🔥 Trash Custom Node
+                </button>
+            </div>
+        `;
+    }
+    
+    document.getElementById('node-details').innerHTML = detailHTML;
+}
+
+// ==========================================================================
+// Mouse Event Handlers (Desktop)
+// ==========================================================================
 window.addEventListener('mousedown', (e) => {
-    // Prevent dragging if interacting with UI overlays
-    if(e.target.closest('#ui-overlay') || e.target.closest('#shopping-bag-container')) return;
+    if (e.target.closest('#ui-overlay') || e.target.closest('#shopping-bag-container')) return;
     
     let canvasX = e.clientX - camera.x;
     let canvasY = e.clientY - camera.y;
     let clickedNode = nodes.find(n => Math.hypot(n.x - canvasX, n.y - canvasY) < 25);
     
-    if(clickedNode && (activeSessionQueue.length==0)) {
-        currentSelectedNode = clickedNode; // Cache globally to access dynamically
-        
-        // Dynamically append description, cheatsheet, difficulty selectors, and submission actions
-        detailHTML = `
-            <h3>${clickedNode.label}</h3>
-            <p>${clickedNode.description}</p>
-            <small><b>Cheat:</b> ${clickedNode.cheatsheet}</small>
-            
-            <div style="margin-top: 15px; border-top: 1px dashed #444; padding-top: 10px;">
-                <label for="difficulty-select"><b>Target Tier Level:</b></label>
-                <select id="difficulty-select">
-                    <option value="A1">A1 - Novice</option>
-                    <option value="A2">A2 - Beginner</option>
-                    <option value="B1">B1 - Intermediate</option>
-                    <option value="B2">B2 - Advanced</option>
-                    <option value="C1">C1 - Expert</option>
-                    <option value="C2">C2 - Mastery</option>
-                </select>
-                
-                <button onclick="handleAddClick()">📥 Add To Mixture</button>
-            </div>
-        `;
-		
-		// Dynamically append the culinary destroy trigger
-		if (clickedNode.is_custom) {
-			detailHTML += `
-				<div style="margin-top: 15px; border-top: 1px solid #e67e22; padding-top: 15px;">
-					<span style="color: #e67e22; font-size: 0.85em; font-weight: bold; display: block; margin-bottom: 8px;">🍳 CUSTOM SANDBOX RECIPE</span>
-					<button onclick="deleteCustomNode('${clickedNode.id}')" style="
-						background: #c0392b; 
-						color: white; 
-						border: none; 
-						padding: 8px 12px; 
-						border-radius: 4px; 
-						cursor: pointer; 
-						width: 100%; 
-						font-weight: bold;
-						transition: background 0.2s;
-					" onmouseover="this.style.background='#962d22'" onmouseout="this.style.background='#c0392b'">
-						🔥 Trash Custom Node
-					</button>
-				</div>
-			`;
-		}
-		
-		document.getElementById('node-details').innerHTML = detailHTML;
+    if (clickedNode && (activeSessionQueue.length == 0)) {
+        selectNode(clickedNode);
     } else {
         isDragging = true;
         startDrag.x = e.clientX - camera.x;
         startDrag.y = e.clientY - camera.y;
     }
+});
+
+window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    camera.x = e.clientX - startDrag.x;
+    camera.y = e.clientY - startDrag.y;
+    draw();
+});
+
+window.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+// Desktop Double Click Handler
+window.addEventListener('dblclick', (e) => {
+    if (e.target.closest('#ui-overlay') || e.target.closest('#shopping-bag-container')) return;
+    
+    let canvasX = e.clientX - camera.x;
+    let canvasY = e.clientY - camera.y;
+    let doubleClickedNode = nodes.find(n => Math.hypot(n.x - canvasX, n.y - canvasY) < 25);
+    
+    if (doubleClickedNode) {
+        const parsedLanguage = doubleClickedNode.id.split('_')[0].toUpperCase();
+        addToMixture(
+            doubleClickedNode.label,
+            doubleClickedNode.description,
+            doubleClickedNode.cheatsheet,
+            parsedLanguage,
+            defaultTier
+        );
+        spawnFloatingLabel(`[${parsedLanguage}] ${doubleClickedNode.label} Mixed!`, "#ff9f43");
+    }
+});
+
+// ==========================================================================
+// Touch Event Handlers (Mobile Navigation & Double-Tap Add to Mixture)
+// ==========================================================================
+let lastTap = 0;
+
+window.addEventListener('touchstart', (e) => {
+    if (e.target.closest('#ui-overlay') || e.target.closest('#shopping-bag-container')) return;
+    
+    const now = Date.now();
+    const DOUBLE_TAP_DELAY = 300;
+    const touch = e.touches[0];
+    
+    // Keep floating label mouse tracker accurate to the touch position
+    globalMousePos.x = touch.clientX;
+    globalMousePos.y = touch.clientY;
+    
+    let canvasX = touch.clientX - camera.x;
+    let canvasY = touch.clientY - camera.y;
+    let clickedNode = nodes.find(n => Math.hypot(n.x - canvasX, n.y - canvasY) < 25);
+    
+    if (now - lastTap < DOUBLE_TAP_DELAY) {
+        // Double Tap registered on mobile screen
+        if (clickedNode) {
+            const parsedLanguage = clickedNode.id.split('_')[0].toUpperCase();
+            addToMixture(
+                clickedNode.label,
+                clickedNode.description,
+                clickedNode.cheatsheet,
+                parsedLanguage,
+                defaultTier
+            );
+            spawnFloatingLabel(`[${parsedLanguage}] ${clickedNode.label} Mixed!`, "#ff9f43");
+        }
+        e.preventDefault(); // Prevents system default browser zoom behaviors on double-tap
+    } else {
+        // Single Tap behavior
+        if (clickedNode && (activeSessionQueue.length == 0)) {
+            selectNode(clickedNode);
+        } else {
+            isDragging = true;
+            startDrag.x = touch.clientX - camera.x;
+            startDrag.y = touch.clientY - camera.y;
+        }
+    }
+    lastTap = now;
+}, { passive: false });
+
+window.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    const touch = e.touches[0];
+    
+    globalMousePos.x = touch.clientX;
+    globalMousePos.y = touch.clientY;
+    
+    camera.x = touch.clientX - startDrag.x;
+    camera.y = touch.clientY - startDrag.y;
+    draw();
+}, { passive: true });
+
+window.addEventListener('touchend', () => {
+    isDragging = false;
 });
 
 // Structural middleman function to unpack values from UI layer cleanly
@@ -1218,106 +1311,6 @@ function deleteCustomNode(nodeId) {
     })
     .catch(err => console.error("Error communicating with delete endpoint:", err));
 }
-
-// Mobile Touch Handling State
-let lastTapTime = 0;
-let touchStartPos = { x: 0, y: 0 };
-let isTouching = false;
-
-canvas.addEventListener('touchstart', (e) => {
-    // Avoid triggering map drags if interacting with UI panels
-    if (e.target.closest('#ui-overlay') || e.target.closest('#shopping-bag-container') || e.target.closest('#btn-kitchen-open') || e.target.closest('#kitchen-modal')) return;
-    
-    isTouching = true;
-    const touch = e.touches[0];
-    
-    startDrag.x = touch.clientX - camera.x;
-    startDrag.y = touch.clientY - camera.y;
-    
-    touchStartPos.x = touch.clientX;
-    touchStartPos.y = touch.clientY;
-}, { passive: true });
-
-canvas.addEventListener('touchmove', (e) => {
-    if (!isTouching) return;
-    const touch = e.touches[0];
-    
-    camera.x = touch.clientX - startDrag.x;
-    camera.y = touch.clientY - startDrag.y;
-    draw();
-}, { passive: true });
-
-canvas.addEventListener('touchend', (e) => {
-    if (!isTouching) return;
-    isTouching = false;
-    
-    const touch = e.changedTouches[0];
-    const dragDistance = Math.hypot(touch.clientX - touchStartPos.x, touch.clientY - touchStartPos.y);
-    
-    // Check if touch event was a tap, not a swipe
-    if (dragDistance < 10) {
-        let canvasX = touch.clientX - camera.x;
-        let canvasY = touch.clientY - camera.y;
-        
-        // Tap hit-radius expanded to 35px to support wider finger presses
-        let clickedNode = nodes.find(n => Math.hypot(n.x - canvasX, n.y - canvasY) < 35);
-        
-        if (clickedNode && (activeSessionQueue.length === 0)) {
-            const now = Date.now();
-            const DOUBLE_TAP_DELAY = 300;
-            
-            if (now - lastTapTime < DOUBLE_TAP_DELAY) {
-                // Double tap gesture: Instantly mix item
-                const parsedLanguage = (clickedNode.language || clickedNode.id.split('_')[0]).toUpperCase();
-                addToMixture(
-                    clickedNode.label,
-                    clickedNode.description,
-                    clickedNode.cheatsheet,
-                    parsedLanguage,
-                    defaultTier
-                );
-                spawnFloatingLabel(`[${parsedLanguage}] ${clickedNode.label} Mixed!`, "#ff9f43");
-                lastTapTime = 0; 
-            } else {
-                // Single tap gesture: Open Inspector Info Card
-                currentSelectedNode = clickedNode;
-                
-                let deleteBtnHtml = '';
-                if (clickedNode.is_custom || currentMapMode === 'personal') {
-                    deleteBtnHtml = `
-                        <button onclick="trashCustomNode('${clickedNode.id}')" style="background: #e74c3c; margin-top: 10px;">
-                            🔥 Trash Custom Recipe
-                        </button>
-                    `;
-                }
-
-                document.getElementById('node-details').innerHTML = `
-                    <h3 style="color: #ff9f43; margin-top:0;">${clickedNode.label}</h3>
-                    <p style="margin: 5px 0; font-size:0.9em; color:#ccc;"><b>Language:</b> ${clickedNode.language || 'Unknown'}</p>
-                    <p style="margin: 5px 0; font-size:0.9em; color:#ccc;"><b>Section:</b> ${clickedNode.section || 'General'}</p>
-                    <p style="margin-top: 10px;">${clickedNode.description || 'No description provided.'}</p>
-                    <p><small><b>Cheat:</b> ${clickedNode.cheatsheet || 'None'}</small></p>
-                    
-                    <div style="margin-top: 15px; border-top: 1px dashed #444; padding-top: 10px;">
-                        <label for="difficulty-select"><b>Target Tier Level:</b></label>
-                        <select id="difficulty-select">
-                            <option value="A1">A1 - Novice</option>
-                            <option value="A2">A2 - Beginner</option>
-                            <option value="B1">B1 - Intermediate</option>
-                            <option value="B2" selected>B2 - Advanced</option>
-                            <option value="C1">C1 - Expert</option>
-                            <option value="C2">C2 - Mastery</option>
-                        </select>
-                        
-                        <button onclick="handleAddClick()">📥 Add To Mixture</button>
-                        ${deleteBtnHtml}
-                    </div>
-                `;
-            }
-            lastTapTime = now;
-        }
-    }
-});//INTEGRATE THIS SPOT PROPERLY LATER
 </script>
 </body>
 <script src="/static/sicrit-auth-kit.js"></script>
