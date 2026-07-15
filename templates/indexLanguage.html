@@ -257,7 +257,8 @@ function draw() {
         if (!pos) return;
 
         // Pull dynamic XP score from database cache
-        const xp = userXPMapping[node.label][0] || 0;
+		const xpobj = userXPMapping[node.label] || [0,""];
+        const xp = xpobj[0];
         let nodeColor = '#5f27cd'; // Default: Unstarted (Purple)
         let strokeColor = '#fff';
 
