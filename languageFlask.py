@@ -204,6 +204,8 @@ def create_custom_node():
         custom_data["languages"] = {}
     if language not in custom_data["languages"]:
         custom_data["languages"][language] = {}
+    if "custom" not in custom_data["languages"][language]:
+        custom_data["languages"][language]["custom"] = []
         
     new_node = {
         "id": node_id,
@@ -214,7 +216,7 @@ def create_custom_node():
         "description": section
     }
     
-    custom_data["languages"][language].append(new_node)
+    custom_data["languages"][language]["custom"].append(new_node)
     
     try:
         with open(custom_file, 'w', encoding='utf-8') as f:
