@@ -150,13 +150,13 @@
         
         <div style="display: flex; flex-direction: column; gap: 15px;">
             <div>
-                <label style="font-weight: bold; color: #e67e22; display: block; margin-bottom: 5px;">Cuisine Style (Language)</label>
-                <input id="kitchen-lang" type="text" placeholder="e.g., Japanese, Spanish, Custom" value="Custom" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a40; color: #fff; box-sizing: border-box;">
+                <label style="font-weight: bold; color: #e67e22; display: block; margin-bottom: 5px;">Language/Field</label>
+                <input id="kitchen-lang" type="text" placeholder="e.g., Japanese, Spanish, Mechanical Engineering" value="Custom" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a40; color: #fff; box-sizing: border-box;">
             </div>
             
             <div>
-                <label style="font-weight: bold; color: #e67e22; display: block; margin-bottom: 5px;">Course (Category/Section)</label>
-                <input id="kitchen-sec" type="text" placeholder="e.g., Kitchen Sandbox, Grammar, Vocab" value="Kitchen Sandbox" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a40; color: #fff; box-sizing: border-box;">
+                <label style="font-weight: bold; color: #e67e22; display: block; margin-bottom: 5px;">Description</label>
+                <input id="kitchen-sec" type="text" placeholder="e.g., Learn how to cook eggs in Mischelin(?) resitoranti" value="Kitchen Sandbox" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a40; color: #fff; box-sizing: border-box;">
             </div>
             
             <div>
@@ -165,8 +165,8 @@
             </div>
             
             <div>
-                <label style="font-weight: bold; color: #e67e22; display: block; margin-bottom: 5px;">Recipe Prompt (Detailed LLM Instruction)</label>
-                <textarea id="kitchen-prompt" rows="5" placeholder="Explain what the AI should generate when cooking exercises. E.g.: Create multiple choice exercises testing the student's conversational knowledge on Kansai-ben sentence endings (nen, ya, wa) with complete grammatical explanations." style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a40; color: #fff; box-sizing: border-box; resize: vertical; font-family: sans-serif;"></textarea>
+                <label style="font-weight: bold; color: #e67e22; display: block; margin-bottom: 5px;">Cheatsheet</label>
+                <textarea id="kitchen-prompt" rows="5" placeholder="Leave hints for yourself and for the AI to use." style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #2a2a40; color: #fff; box-sizing: border-box; resize: vertical; font-family: sans-serif;"></textarea>
             </div>
             
             <button onclick="bakeCustomNode()" style="background: #e67e22; color: #fff; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: background 0.2s;" onmouseover="this.style.background='#d35400'" onmouseout="this.style.background='#e67e22'">
@@ -356,7 +356,7 @@ function draw() {
         ctx.fillStyle = '#ff9f43';
         ctx.font = 'bold 20px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(`🚩 LANGUAGE: ${lang}`, langOriginX, startY + 50);
+        ctx.fillText(`🚩 ${lang}`, langOriginX, startY + 50);
 
         // Calculate staggered upward coordinate coordinates
         langNodes.forEach((node, nIdx) => {

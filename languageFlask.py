@@ -184,7 +184,7 @@ def create_custom_node():
         
     # Generate clean, URL-safe node ID using timestamping
     safe_label = re.sub(r'[^a-zA-Z0-9_]', '', label.lower().replace(' ', '_'))
-    node_id = f"custom_{nickname.lower()}_{safe_label}_{int(time.time())}"
+    node_id = f"{language}_{nickname.lower()}_{safe_label}_{int(time.time())}"
     
     static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
     os.makedirs(static_dir, exist_ok=True)
@@ -204,8 +204,6 @@ def create_custom_node():
         custom_data["languages"] = {}
     if language not in custom_data["languages"]:
         custom_data["languages"][language] = {}
-    if section not in custom_data["languages"][language]:
-        custom_data["languages"][language][section] = []
         
     new_node = {
         "id": node_id,
@@ -216,7 +214,7 @@ def create_custom_node():
         "description": section
     }
     
-    custom_data["languages"][language][section].append(new_node)
+    custom_data["languages"][language].append(new_node)
     
     try:
         with open(custom_file, 'w', encoding='utf-8') as f:
