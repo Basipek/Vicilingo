@@ -259,7 +259,7 @@ function draw() {
 		const lang = node.id.split('_')[0].toUpperCase(); // E.g., "JP"
 		
         // Pull dynamic XP score from database cache
-		const xpobj = userXPMapping[node.language+"_"+node.label] || -1;
+		const xpobj = userXPMapping[lang+"_"+node.label] || [-1,""];
         const xp = xpobj[0];
         let nodeColor = '#5f27cd'; // Default: Unstarted (Purple)
         let strokeColor = '#fff';
