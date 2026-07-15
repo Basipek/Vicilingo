@@ -278,6 +278,7 @@ def update_xp():
     nickname = data.get('nickname') or 'Anonymous'
     session_key = data.get('session_key')
     topic = data.get('topic')
+    language = data.get('language')
     change = data.get('change', 0)
     
     if not session_is_auth(nickname, session_key):
@@ -290,15 +291,15 @@ def update_xp():
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()
         
-        cursor.execute("SELECT xp FROM user_xp WHERE nickname = ? AND topic = ?", (nickname, topic))
+        cursor.execute("SELECT xp FROM user_xp WHERE nickname = ? AND topic = ? AND language = ?", (nickname, topic, language))
         row = cursor.fetchone()
         
         if row is None:
             new_xp = max(0, min(100, change))
-            cursor.execute("INSERT INTO user_xp (nickname, topic, xp) VALUES (?, ?, ?)", (nickname, topic, new_xp))
+            cursor.execute("INSERT INTO user_xp (nickname, language, topic, xp) VALUES (?, ?, ?)", (nickname, language, topic, new_xp))
         else:
             new_xp = max(0, min(100, row[0] + change))
-            cursor.execute("UPDATE user_xp SET xp = ? WHERE nickname = ? AND topic = ?", (new_xp, nickname, topic))
+            cursor.execute("UPDATE user_xp SET xp = ? WHERE nickname = ? AND topic = ? AND language = ?", (new_xp, language, nickname, topic))
             
         conn.commit()
         conn.close()
@@ -324,7 +325,7 @@ def forget_topic():
     try:
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()
-        cursor.execute("DELETE FROM user_xp WHERE nickname = ? AND topic = ?", (nickname, topic))
+        cursor.execute("DELETE FROM user_xp WHERE nickname = ? AND topic = ? AND language = ?", (nickname, topic))
         conn.commit()
         conn.close()
         
