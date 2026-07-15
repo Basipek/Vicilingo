@@ -89,65 +89,78 @@ def index():
 def get_all_nodes():
     """
     Dynamically scans the languagegame directory, reads all .json files,
-    and merges custom user-baked recipe nodes from /static/<nickname>_custom.json.
+    and aggregates them into a single cohesive structural payload.
     """
-    target_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "languagegame")
-    nickname = request.args.get('nickname')
-    
-    # Initialize empty container
-    combined = {
+    target_dir = os.path.join(language_bp.static_folder, 'languagegame')
+    combined_data = {
         "languages": {}
     }
     
-    # 1. Load native static directory files
-    if os.path.exists(target_dir):
+    try:
+        if not os.path.exists(target_dir):
+            return jsonify({"error": f"Directory structural path missing: {target_dir}"}), 404
+            
+        # Scan everything inside the folder
         for filename in os.listdir(target_dir):
             if filename.endswith('.json'):
-                filepath = os.path.join(target_dir, filename)
-                try:
-                    with open(filepath, 'r', encoding='utf-8') as f:
-                        data = json.load(f)
-                        if "languages" in data:
-                            for lang, sections in data["languages"].items():
-                                if lang not in combined["languages"]:
-                                    combined["languages"][lang] = {}
-                                for sec, nodes_list in sections.items():
-                                    if sec not in combined["languages"][lang]:
-                                        combined["languages"][lang][sec] = []
-                                    existing_ids = {n["id"] for n in combined["languages"][lang][sec]}
-                                    for n in nodes_list:
-                                        if n["id"] not in existing_ids:
-                                            combined["languages"][lang][sec].append(n)
-                except Exception as e:
-                    print(f"Error reading native json file {filename}: {e}")
-
-    # 2. Dynamically merge Kitchen Sandbox Custom Nodes
-    if nickname:
-        static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
-        custom_file = os.path.join(static_dir, f"{nickname}_custom.json")
-        
-        if os.path.exists(custom_file):
-            try:
-                with open(custom_file, 'r', encoding='utf-8') as f:
-                    custom_data = json.load(f)
-                    if "languages" in custom_data:
-                        for lang, sections in custom_data["languages"].items():
-                            if lang not in combined["languages"]:
-                                combined["languages"][lang] = {}
-                            for sec, nodes_list in sections.items():
-                                if sec not in combined["languages"][lang]:
-                                    combined["languages"][lang][sec] = []
-                                existing_ids = {n["id"] for n in combined["languages"][lang][sec]}
-                                for n in nodes_list:
-                                    if n["id"] not in existing_ids:
-                                        # Enforce visual styling identifier
-                                        n["is_custom"] = True
-                                        combined["languages"][lang][sec].append(n)
-            except Exception as e:
-                print(f"Error loading custom nodes for user {nickname}: {e}")
+                file_path = os.path.join(target_dir, filename)
                 
-    return jsonify(combined)
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        file_json = json.load(f)
+                        
+                    lang_name = file_json.get('language', 'Unknown')
+                    section_name = file_json.get('section', filename.replace('.json', ''))
+                    file_nodes = file_json.get('nodes', [])
+                    
+                    # Initialize language tracking matrix if missing
+                    if lang_name not in combined_data["languages"]:
+                        combined_data["languages"][lang_name] = {}
+                        
+                    # Append node matrices grouped cleanly by sections
+                    combined_data["languages"][lang_name][section_name] = file_nodes
+                    
+                except (json.JSONDecodeError, IOError) as e:
+                    # Skip or log corrupted files silently so one broken file won't crash the whole map load
+                    print(f" [!] Error reading structural file {filename}: {str(e)}")
+                    continue
 
+        return jsonify(combined_data)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@language_bp.route('/api/nodes/personal/<nickname>')
+def get_personal_nodes(nickname):
+    """
+    Loads only the custom nodes baked inside /static/<nickname>_custom.json for a user.
+    """
+    clean_nickname = os.path.basename(nickname)
+    custom_file = os.path.join(language_bp.static_folder, f"{clean_nickname}_custom.json")
+    
+    combined_data = {
+        "languages": {}
+    }
+    
+    if not os.path.exists(custom_file):
+        # Graceful empty load to prevent frontend crashes
+        return jsonify(combined_data)
+        
+    try:
+        with open(custom_file, 'r', encoding='utf-8') as f:
+            custom_json = json.load(f)
+            
+        if "languages" in custom_json:
+            for lang_name, sections in custom_json["languages"].items():
+                combined_data["languages"][lang_name] = {}
+                for section_name, nodes_list in sections.items():
+                    for node in nodes_list:
+                        node["is_custom"] = True
+                    combined_data["languages"][lang_name][section_name] = nodes_list
+                    
+        return jsonify(combined_data)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @language_bp.route('/api/nodes/custom/create', methods=['POST'])
 def create_custom_node():
