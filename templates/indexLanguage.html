@@ -298,7 +298,7 @@ window.addEventListener('mousedown', (e) => {
     let canvasY = e.clientY - camera.y;
     let clickedNode = nodes.find(n => Math.hypot(n.x - canvasX, n.y - canvasY) < 25);
     
-    if(clickedNode && !activeSessionQueue) {
+    if(clickedNode && (activeSessionQueue.length==0)) {
         document.getElementById('node-details').innerHTML = `
             <h3>${clickedNode.label}</h3>
             <p>${clickedNode.description}</p>
