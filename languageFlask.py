@@ -304,7 +304,7 @@ def update_xp():
         conn.commit()
         conn.close()
         
-        return jsonify({"status": "success", "topic": topic, "xp": new_xp})
+        return jsonify({"status": "success","language": language, "topic": topic, "xp": new_xp})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
@@ -330,6 +330,6 @@ def forget_topic():
         conn.commit()
         conn.close()
         
-        return jsonify({"status": "success", "message": f"Forgot topic: {topic}"})
+        return jsonify({"status": "success", "message": f"Forgot topic: {topic} from {language}"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500

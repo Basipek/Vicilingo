@@ -257,7 +257,7 @@ function draw() {
         if (!pos) return;
 
         // Pull dynamic XP score from database cache
-        const xp = userXPMapping[node.label] || 0;
+        const xp = userXPMapping[node.label][0] || 0;
         let nodeColor = '#5f27cd'; // Default: Unstarted (Purple)
         let strokeColor = '#fff';
 
@@ -817,7 +817,7 @@ function fetchUserXP() {
         if (data.status === 'success') {
             userXPMapping = {};
             data.topics.forEach(item => {
-                userXPMapping[item.topic] = item.xp;
+                userXPMapping[item.topic] = [item.xp,item.language];
             });
         }
     })
@@ -861,7 +861,8 @@ function renderProfileTab() {
     
     let html = '';
     keys.forEach(topic => {
-        const xp = userXPMapping[topic];
+        const xp = userXPMapping[topic][0];
+        const language = userXPMapping[topic][1];
         totalXP += xp;
         
         let color = '#5f27cd';
@@ -871,7 +872,7 @@ function renderProfileTab() {
         
         html += `
             <div style="background: rgba(255,255,255,0.03); margin-bottom: 8px; padding: 10px; border-radius: 4px; border-left: 3px solid ${color}; position: relative;">
-                <div style="font-size: 0.9em; font-weight: bold; width: 85%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${topic}</div>
+                <div style="font-size: 0.9em; font-weight: bold; width: 85%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">[${language}] ${topic}</div>
                 <div style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
                     <div style="background: #222; flex-grow: 1; height: 8px; border-radius: 4px; overflow: hidden;">
                         <div style="background: ${color}; width: ${xp}%; height: 100%;"></div>
