@@ -372,7 +372,7 @@ let sessionTotalAttempts = 0;
 let sessionCorrectAnswers = 0;
 let sessionTotalMistakes = 0;
 let sessionMistakenTopics = {}; // Tracks { topicName: mistakeCount }
-let sessionAllTopicsInPlay = new Set();
+let sessionAllTopicsInPlay = [];
 let sessionFailedTopics = new Set(); // Topics that suffered at least one mistake
 
 // Upgraded Gym Engine API Caller
@@ -422,7 +422,7 @@ function testLLMCall(shoppingBagItems) {
         sessionCorrectAnswers = 0;
         sessionTotalMistakes = 0;
         sessionMistakenTopics = {};
-        const sessionAllTopicsInPlay = activeSessionQueue.map(item => [item.topic, item.language]);
+        sessionAllTopicsInPlay = data.exercises.map(item => [item.topic, item.language]);
         sessionFailedTopics = new Set();
 
         // Fire off the first layout render
@@ -656,7 +656,7 @@ window.addEventListener('mousedown', (e) => {
     let canvasY = e.clientY - camera.y;
     let clickedNode = nodes.find(n => Math.hypot(n.x - canvasX, n.y - canvasY) < 25);
     
-    if(clickedNode) {
+    if(clickedNode & !activeSessionQueue) {
         currentSelectedNode = clickedNode; // Cache globally to access dynamically
         
         // Dynamically append description, cheatsheet, difficulty selectors, and submission actions
